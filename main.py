@@ -183,8 +183,8 @@ if not appointments_df.empty:
         )
 
         # Handle row selection
-        if selected_indices:
-            selected_index = next(iter(selected_indices))  # Get the first selected row
+        if not selected_indices.empty:
+            selected_index = selected_indices.index[0]  # Get the first selected row's index
             selected_customer = filtered_df.iloc[selected_index]['Name']
             if selected_customer != st.session_state.get('selected_customer'):
                 st.session_state.selected_customer = selected_customer
