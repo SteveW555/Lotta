@@ -31,8 +31,8 @@ ENV/
 *.swp
 *.swo
 
-# Streamlit
-.streamlit/
+# Keep .streamlit directory for cloud deployment
+!.streamlit/
 
 # Project specific
 *.csv

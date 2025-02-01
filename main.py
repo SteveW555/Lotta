@@ -20,8 +20,10 @@ st.set_page_config(
 )
 
 # Load custom CSS
-with open('styles/custom.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+css_path = os.path.join(os.path.dirname(__file__), 'styles', 'custom.css')
+if os.path.exists(css_path):
+    with open(css_path) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Initialize session state
 if 'appointments_changed' not in st.session_state:
@@ -226,7 +228,7 @@ if not appointments_df.empty:
                 return ''
             # Format as YYYY-MM-DD Day for proper sorting, but show day name for readability
             date_str = x.strftime('%Y-%m-%d %A')
-            return f"🟢 {date_str}" if x.date() == current_date.date() else date_str
+            return f" {date_str}" if x.date() == current_date.date() else date_str
         
         display_df['Date'] = display_df['Appointment_date'].apply(format_date_with_indicator)
         display_df['Time'] = display_df.apply(lambda x: f"{x['Start_time']} - {x['End_time']}", axis=1)
@@ -318,7 +320,7 @@ if not appointments_df.empty:
                     
                     with button_col1:
                         if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("✏️ Edit", key=f"edit_{row['Name'].replace(' ', '_').lower()}"):
+                            if st.button("", key=f"edit_{row['Name'].replace(' ', '_').lower()}"):
                                 st.session_state.editing_appointment = row['Name'].replace(" ", "_").lower()
                                 # Split time range into start and end times
                                 time_parts = row['Time'].split(' - ')
@@ -385,7 +387,7 @@ if not appointments_df.empty:
                     
                     with button_col2:
                         if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("❌ Cancel", key=f"cancel_{row['Name'].replace(' ', '_').lower()}"):
+                            if st.button("", key=f"cancel_{row['Name'].replace(' ', '_').lower()}"):
                                 appointments_df = appointments_df[appointments_df['Name'] != row['Name']]
                                 save_appointments(appointments_df)
                                 st.success("Appointment cancelled successfully!")
@@ -393,7 +395,7 @@ if not appointments_df.empty:
                     
                     with button_col3:
                         if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("📝 Add Note", key=f"note_{row['Name'].replace(' ', '_').lower()}"):
+                            if st.button("", key=f"note_{row['Name'].replace(' ', '_').lower()}"):
                                 st.text_area("Add a note for this appointment", key=f"note_text_{row['Name'].replace(' ', '_').lower()}")
                     
                     if len(selected_rows) > 1:
