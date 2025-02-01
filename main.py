@@ -148,16 +148,16 @@ if not appointments_df.empty:
             hide_index=True,
             use_container_width=True,
             key='appointments_table',
-            disabled=False,
+            disabled=True,  # Disable cell editing
             column_config={
                 "Name": st.column_config.Column(
                     "Name",
-                    width="medium",
+                    width=500,  # Approximately 70% of typical viewport
                     help="Customer name",
                 ),
                 "Address": st.column_config.Column(
                     "Address",
-                    width="medium",
+                    width=400,  # Approximately 60% of typical viewport
                     help="Customer address",
                 ),
                 "Date": st.column_config.Column(
@@ -176,18 +176,19 @@ if not appointments_df.empty:
                     "Last Visit",
                     width="small",
                 ),
-            }
+            },
+            on_change=None,
+            height=400,  # Fixed height to make scrolling smoother
+            num_rows="dynamic"
         )
 
-        # Handle row selection - Improved state handling
-        if 'appointments_table' in st.session_state:
-            edited_rows = st.session_state.appointments_table.get('edited_rows', {})
-            if edited_rows:
-                selected_index = list(edited_rows.keys())[0]
-                selected_customer = filtered_df.iloc[selected_index]['Name']
-                if selected_customer != st.session_state.get('selected_customer'):
-                    st.session_state.selected_customer = selected_customer
-                    st.rerun()  # Ensure the UI updates when a new customer is selected
+        # Handle row selection
+        if selected_indices:
+            selected_index = next(iter(selected_indices))  # Get the first selected row
+            selected_customer = filtered_df.iloc[selected_index]['Name']
+            if selected_customer != st.session_state.get('selected_customer'):
+                st.session_state.selected_customer = selected_customer
+                st.rerun()  # Ensure the UI updates when a new customer is selected
 
         # Show customer details if a customer is selected
         if st.session_state.selected_customer:
