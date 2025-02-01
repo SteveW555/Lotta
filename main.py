@@ -20,6 +20,8 @@ if 'appointments_changed' not in st.session_state:
     st.session_state.appointments_changed = False
 if 'selected_customer' not in st.session_state:
     st.session_state.selected_customer = None
+if 'selected_row' not in st.session_state:
+    st.session_state.selected_row = None
 
 # Data file path
 DATA_FILE = 'data/appointments.csv'
@@ -142,12 +144,23 @@ if not appointments_df.empty:
             'Staff_name': 'Staff'
         })
 
-        # Show the dataframe with increased height
-        st.dataframe(
+        # Add a selection column to the display dataframe
+        display_df = display_df.copy()
+        if 'selected' not in display_df.columns:
+            display_df['selected'] = False
+
+        # Show the dataframe with increased height and make it interactive
+        edited_df = st.data_editor(
             display_df,
             hide_index=True,
             use_container_width=True,
             column_config={
+                "selected": st.column_config.CheckboxColumn(
+                    "Select",
+                    help="Select appointment",
+                    default=False,
+                    width="small"
+                ),
                 "Name": st.column_config.Column(
                     "Name",
                     width=200,
@@ -175,7 +188,51 @@ if not appointments_df.empty:
                     width="small"
                 )
             },
-            height=600
+            height=400,
+            key="appointment_table",
+            disabled=["Name", "Address", "Date", "Time", "Staff", "Last Visit"],
+            column_order=["selected", "Name", "Address", "Date", "Time", "Staff", "Last Visit"]
         )
+
+        # Show detail card for selected rows
+        selected_rows = edited_df[edited_df['selected']]
+        if not selected_rows.empty:
+            for _, row in selected_rows.iterrows():
+                with st.container():
+                    st.markdown(f"### Appointment Details for {row['Name']}")
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.markdown(f"**Customer Name:** {row['Name']}")
+                        st.markdown(f"**Address:** {row['Address']}")
+                        st.markdown(f"**Date:** {row['Date']}")
+                    
+                    with col2:
+                        st.markdown(f"**Time:** {row['Time']}")
+                        st.markdown(f"**Staff:** {row['Staff']}")
+                        st.markdown(f"**Last Visit:** {row['Last Visit']}")
+
+                    # Add buttons for actions
+                    col1, col2, col3 = st.columns(3)
+                    unique_id = row['Name'].replace(" ", "_").lower()
+                    
+                    with col1:
+                        if st.button(f"Edit Appointment", key=f"edit_{unique_id}"):
+                            st.session_state.selected_customer = row['Name']
+                    with col2:
+                        if st.button(f"Cancel Appointment", key=f"cancel_{unique_id}"):
+                            confirm_key = f"confirm_cancel_{unique_id}"
+                            if st.button("Confirm Cancellation", key=confirm_key):
+                                appointments_df = appointments_df[
+                                    appointments_df['Name'] != row['Name']
+                                ]
+                                save_appointments(appointments_df)
+                                st.rerun()
+                    with col3:
+                        if st.button(f"Add Note", key=f"note_{unique_id}"):
+                            st.text_area("Add a note for this appointment", key=f"note_text_{unique_id}")
+                    
+                    if len(selected_rows) > 1:
+                        st.markdown("---")
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
