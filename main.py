@@ -50,10 +50,6 @@ def get_customer_appointments(df, customer_name):
 
     return past_appt, current_appt, next_appt
 
-@st.cache_data
-def get_selected_row_index():
-    return None
-
 # Title
 st.markdown('<h1 class="hero-title">Lotta\'s Appointments</h1>', unsafe_allow_html=True)
 
@@ -146,7 +142,7 @@ if not appointments_df.empty:
             'Staff_name': 'Staff'
         })
 
-        # Show the dataframe with clickable rows
+        # Show the dataframe
         st.dataframe(
             display_df,
             hide_index=True,
@@ -181,35 +177,6 @@ if not appointments_df.empty:
             },
             height=400
         )
-
-        # Add a selection mechanism using selectbox
-        selected_name = st.selectbox(
-            "Select a customer to view details",
-            options=display_df['Name'].tolist(),
-            index=None,
-            key='customer_selector'
-        )
-
-        if selected_name:
-            st.session_state.selected_customer = selected_name
-            st.experimental_rerun()
-
-        # Show customer details if a customer is selected
-        if st.session_state.selected_customer:
-            st.markdown("### Customer Details")
-            past_appt, current_appt, next_appt = get_customer_appointments(appointments_df, st.session_state.selected_customer)
-
-            with st.container():
-                st.markdown(f"""
-                <div class="customer-details">
-                    <h4>{st.session_state.selected_customer}</h4>
-                    <hr>
-                    <h5>Appointments:</h5>
-                    {f"<p><strong>Last Visit:</strong> {format_appointment_date(past_appt['Appointment_date'])} ({past_appt['Start_time']} - {past_appt['End_time']})</p>" if past_appt is not None else ""}
-                    {f"<p><strong>Today's Visit:</strong> {format_appointment_date(current_appt['Appointment_date'])} ({current_appt['Start_time']} - {current_appt['End_time']})</p>" if current_appt is not None else ""}
-                    {f"<p><strong>Next Visit:</strong> {format_appointment_date(next_appt['Appointment_date'])} ({next_appt['Start_time']} - {next_appt['End_time']})</p>" if next_appt is not None else ""}
-                </div>
-                """, unsafe_allow_html=True)
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
 
