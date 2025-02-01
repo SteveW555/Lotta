@@ -332,7 +332,7 @@ if not appointments_df.empty:
                     
                     with button_col1:
                         if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("", key=f"edit_{row['Name'].replace(' ', '_').lower()}"):
+                            if st.button("✏️ Edit", key=f"edit_{row['Name'].replace(' ', '_').lower()}"):
                                 st.session_state.editing_appointment = row['Name'].replace(" ", "_").lower()
                                 # Split time range into start and end times
                                 time_parts = row['Time'].split(' - ')
@@ -399,7 +399,7 @@ if not appointments_df.empty:
                     
                     with button_col2:
                         if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("", key=f"cancel_{row['Name'].replace(' ', '_').lower()}"):
+                            if st.button("❌ Cancel", key=f"cancel_{row['Name'].replace(' ', '_').lower()}"):
                                 appointments_df = appointments_df[appointments_df['Name'] != row['Name']]
                                 save_appointments(appointments_df)
                                 st.success("Appointment cancelled successfully!")
@@ -407,7 +407,7 @@ if not appointments_df.empty:
                     
                     with button_col3:
                         if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("", key=f"note_{row['Name'].replace(' ', '_').lower()}"):
+                            if st.button("📝 Add Note", key=f"note_{row['Name'].replace(' ', '_').lower()}"):
                                 st.text_area("Add a note for this appointment", key=f"note_text_{row['Name'].replace(' ', '_').lower()}")
                     
                     if len(selected_rows) > 1:
