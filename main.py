@@ -272,27 +272,27 @@ if not appointments_df.empty:
                 ),
                 "Name": st.column_config.Column(
                     "Name",
-                    width=150
+                    width=135
                 ),
                 "Address": st.column_config.Column(
                     "Address",
-                    width=160
+                    width=144
                 ),
                 "Date": st.column_config.Column(
                     "Date",
-                    width=140
+                    width=150
                 ),
                 "Time": st.column_config.Column(
                     "Time",
-                    width=120
+                    width=150
                 ),
                 "Staff": st.column_config.Column(
                     "Staff",
-                    width="small"
+                    width=120
                 ),
                 "Last Visit": st.column_config.Column(
                     "Last Visit",
-                    width="100"
+                    width=180
                 )
             },
             height=400,
