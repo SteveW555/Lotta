@@ -273,7 +273,7 @@ if not appointments_df.empty:
                 ),
                 "Name": st.column_config.Column(
                     "Name",
-                    width=135
+                    width=136
                 ),
                 "Address": st.column_config.Column(
                     "Address",
