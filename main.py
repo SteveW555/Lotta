@@ -143,9 +143,11 @@ if not appointments_df.empty:
         })
 
         # Add CSS class for current date rows
-        row_styles = [{
-            'current-date': filtered_df.iloc[i]['Appointment_date'].date() == current_date.date()
-        } for i in range(len(filtered_df))]
+        row_styles = []
+        for i in range(len(filtered_df)):
+            row_date = filtered_df.iloc[i]['Appointment_date'].date()
+            is_current = row_date == pd.to_datetime(date_filter).date()
+            row_styles.append({'backgroundColor': '#f5f5f5' if is_current else None})
 
         # Show the dataframe with clickable rows
         selected_indices = st.data_editor(
@@ -153,25 +155,31 @@ if not appointments_df.empty:
             hide_index=True,
             use_container_width=True,
             key='appointments_table',
-            disabled=True,
+            disabled=False,  # Changed to False to allow clicking
             column_config={
-                "Name": st.column_config.Column(width=350),
-                "Address": st.column_config.Column(width=300),
+                "Name": st.column_config.Column(width="70%"),
+                "Address": st.column_config.Column(width="60%"),
                 "Date": st.column_config.Column(width="medium"),
                 "Time": st.column_config.Column(width="small"),
                 "Staff": st.column_config.Column(width="small"),
                 "Last Visit": st.column_config.Column(width="small"),
             },
+            on_change=None,
             row_style=row_styles
         )
 
-        # Handle row selection
-        if st.session_state.get('appointments_table', {}).get('edited_rows'):
-            selected_index = list(st.session_state.appointments_table['edited_rows'].keys())[0]
-            selected_customer = filtered_df.iloc[selected_index]['Name']
-            st.session_state.selected_customer = selected_customer
+        # Handle row selection - Improved state handling
+        if 'appointments_table' in st.session_state:
+            edited_rows = st.session_state.appointments_table.get('edited_rows', {})
+            if edited_rows:
+                selected_index = list(edited_rows.keys())[0]
+                selected_customer = filtered_df.iloc[selected_index]['Name']
+                if selected_customer != st.session_state.get('selected_customer'):
+                    st.session_state.selected_customer = selected_customer
+                    st.rerun()  # Ensure the UI updates when a new customer is selected
 
-            # Show customer details card
+        # Show customer details if a customer is selected
+        if st.session_state.selected_customer:
             st.markdown("### Customer Details")
             past_appt, current_appt, next_appt = get_customer_appointments(appointments_df, st.session_state.selected_customer)
 
