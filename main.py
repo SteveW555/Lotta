@@ -119,7 +119,7 @@ if not appointments_df.empty:
         filtered_df = appointments_df[
             (appointments_df['Appointment_date'] >= date_range_start) &
             (appointments_df['Appointment_date'] <= date_range_end)
-        ]
+        ] if not show_all else appointments_df
 
     filtered_df = filtered_df.sort_values(by=sort_by)
 
@@ -142,7 +142,7 @@ if not appointments_df.empty:
             'Staff_name': 'Staff'
         })
 
-        # Show the dataframe
+        # Show the dataframe with increased height
         st.dataframe(
             display_df,
             hide_index=True,
@@ -175,7 +175,7 @@ if not appointments_df.empty:
                     width="small"
                 )
             },
-            height=400
+            height=600  # Increased from 400 to show more rows
         )
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
