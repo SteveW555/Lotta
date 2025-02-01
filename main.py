@@ -150,12 +150,12 @@ if not appointments_df.empty:
             column_config={
                 "Name": st.column_config.Column(
                     "Name",
-                    width=500,
+                    width=200,  # Reduced from 500
                     help="Customer name"
                 ),
                 "Address": st.column_config.Column(
                     "Address",
-                    width=400,
+                    width=250,  # Reduced from 400
                     help="Customer address"
                 ),
                 "Date": st.column_config.Column(
