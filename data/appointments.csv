@@ -1,1 +1,11 @@
 Name,Address,Appointment_date,Start_time,End_time,Staff_name,Days_since_last_visit
+Erik Andersson,Kungsgatan 15,2025-02-01,09:00,11:00,Maria Nilsson,30
+Anna Lindström,Östergatan 8,2025-02-01,13:00,15:00,Emma Karlsson,14
+Lars Johansson,Strömstadsvägen 45,2025-02-02,10:00,12:00,Sofia Berg,First visit
+Karin Gustafsson,Kampenhofsgatan 12,2025-02-02,14:00,16:00,Maria Nilsson,45
+Per Nilsson,Västanvindsvägen 23,2025-02-03,09:00,11:00,Emma Karlsson,21
+Sofia Ekström,Sundbergsgatan 7,2025-02-03,13:00,15:00,Sofia Berg,60
+Magnus Bergström,Margretegärdsgatan 34,2025-02-04,10:00,12:00,Maria Nilsson,First visit
+Eva Söderberg,Norra Drottninggatan 19,2025-02-04,14:00,16:00,Emma Karlsson,30
+Nils Pettersson,Asplundsgatan 5,2025-02-05,09:00,11:00,Sofia Berg,90
+Ingrid Blomqvist,Södra Hamngatan 28,2025-02-05,13:00,15:00,Maria Nilsson,7
