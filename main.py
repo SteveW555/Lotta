@@ -18,6 +18,8 @@ with open('styles/custom.css') as f:
 # Initialize session state
 if 'appointments_changed' not in st.session_state:
     st.session_state.appointments_changed = False
+if 'selected_customer' not in st.session_state:
+    st.session_state.selected_customer = None
 
 # Data file path
 DATA_FILE = 'data/appointments.csv'
@@ -35,6 +37,18 @@ def save_appointments(df):
     """Save appointments to CSV file"""
     os.makedirs('data', exist_ok=True)
     df.to_csv(DATA_FILE, index=False)
+
+def get_customer_appointments(df, customer_name):
+    """Get past, current, and next appointments for a customer"""
+    customer_appointments = df[df['Name'] == customer_name].copy()
+    customer_appointments['Appointment_date'] = pd.to_datetime(customer_appointments['Appointment_date'])
+    current_date = pd.to_datetime(datetime.now().date())
+
+    past_appt = customer_appointments[customer_appointments['Appointment_date'] < current_date].sort_values('Appointment_date', ascending=False).iloc[0] if not customer_appointments[customer_appointments['Appointment_date'] < current_date].empty else None
+    current_appt = customer_appointments[customer_appointments['Appointment_date'] == current_date].iloc[0] if not customer_appointments[customer_appointments['Appointment_date'] == current_date].empty else None
+    next_appt = customer_appointments[customer_appointments['Appointment_date'] > current_date].sort_values('Appointment_date').iloc[0] if not customer_appointments[customer_appointments['Appointment_date'] > current_date].empty else None
+
+    return past_appt, current_appt, next_appt
 
 # Title
 st.markdown('<h1 class="hero-title">Lotta\'s Appointments</h1>', unsafe_allow_html=True)
@@ -79,7 +93,7 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.subheader("Filter Appointments")
-    show_all = st.checkbox("Show all appointments", value=True)
+    show_all = st.checkbox("Show all appointments", value=False)
     date_filter = st.date_input("Select Date", value=datetime.now())
 
 with col2:
@@ -92,6 +106,7 @@ with col2:
 # Filter and sort appointments
 if not appointments_df.empty:
     appointments_df['Appointment_date'] = pd.to_datetime(appointments_df['Appointment_date'])
+    current_date = pd.to_datetime(datetime.now().date())
 
     if show_all:
         filtered_df = appointments_df
@@ -121,11 +136,37 @@ if not appointments_df.empty:
             'Staff_name': 'Staff'
         })
 
-        st.dataframe(
+        # Show the dataframe with clickable rows
+        selected_row = st.data_editor(
             display_df,
             hide_index=True,
-            use_container_width=True
+            use_container_width=True,
+            key='appointments_table',
+            disabled=True
         )
+
+        # Handle row selection
+        if st.session_state.appointments_table and len(st.session_state.appointments_table['edited_rows']) > 0:
+            selected_index = list(st.session_state.appointments_table['edited_rows'].keys())[0]
+            selected_customer = filtered_df.iloc[selected_index]['Name']
+            st.session_state.selected_customer = selected_customer
+
+        # Show customer details card if a customer is selected
+        if st.session_state.selected_customer:
+            st.markdown("### Customer Details")
+            past_appt, current_appt, next_appt = get_customer_appointments(appointments_df, st.session_state.selected_customer)
+
+            with st.container():
+                st.markdown(f"""
+                <div class="customer-details">
+                    <h4>{st.session_state.selected_customer}</h4>
+                    <hr>
+                    <h5>Appointments:</h5>
+                    {f"<p><strong>Last Visit:</strong> {format_appointment_date(past_appt['Appointment_date'])} ({past_appt['Start_time']} - {past_appt['End_time']})</p>" if past_appt is not None else ""}
+                    {f"<p><strong>Today's Visit:</strong> {format_appointment_date(current_appt['Appointment_date'])} ({current_appt['Start_time']} - {current_appt['End_time']})</p>" if current_appt is not None else ""}
+                    {f"<p><strong>Next Visit:</strong> {format_appointment_date(next_appt['Appointment_date'])} ({next_appt['Start_time']} - {next_appt['End_time']})</p>" if next_appt is not None else ""}
+                </div>
+                """, unsafe_allow_html=True)
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
 

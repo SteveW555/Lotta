@@ -16,6 +16,8 @@ div.css-1r6slb0.e1tzin5v2 {
     margin: 1rem 0;
     border-radius: 8px;
     background-color: white;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .hero-title {
@@ -27,6 +29,20 @@ div.css-1r6slb0.e1tzin5v2 {
 
 /* Adjust sidebar width */
 section[data-testid="stSidebar"] {
-    width: 25% !important;
-    min-width: 25% !important;
+    width: 18% !important;
+    min-width: 18% !important;
+}
+
+/* Highlight current date rows */
+[data-testid="stDataFrame"] div[role="row"].current-date {
+    background-color: #f5f5f5 !important;
+}
+
+/* Customer details card */
+.customer-details {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: white;
 }

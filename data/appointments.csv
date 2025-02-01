@@ -1,35 +1,36 @@
 Name,Address,Appointment_date,Start_time,End_time,Staff_name,Days_since_last_visit
 Anders Karlsson,Södra vägen 12,2025-01-01,09:00,11:00,Lotta,30
-Maria Svensson,Norra gatan 45,2025-01-02,13:00,15:00,Meera,14
-Erik Lindgren,Västergatan 8,2025-01-03,10:00,12:00,Alice,First visit
-Sara Bergman,Östragatan 23,2025-01-04,14:00,16:00,Steve,45
-Johan Nilsson,Kungsgatan 67,2025-01-05,09:00,11:00,Hefa,21
-Lisa Andersson,Drottninggatan 34,2025-01-06,13:00,15:00,Lotta,60
-Peter Ekström,Storgatan 89,2025-01-07,10:00,12:00,Meera,First visit
-Emma Johansson,Järnvägsgatan 12,2025-01-08,14:00,16:00,Alice,30
-Karl Gustafsson,Hamngatan 56,2025-01-09,09:00,11:00,Steve,90
-Anna Holm,Kyrkogatan 78,2025-01-10,13:00,15:00,Hefa,7
-Mikael Berg,Åsgatan 45,2025-01-11,09:00,11:00,Lotta,14
-Sofia Löfgren,Ringvägen 23,2025-01-12,13:00,15:00,Meera,28
-Lars Nyström,Parkgatan 67,2025-01-13,10:00,12:00,Alice,45
-Eva Malmström,Sveagatan 89,2025-01-14,14:00,16:00,Steve,60
-Nils Persson,Brogatan 12,2025-01-15,09:00,11:00,Hefa,30
-Karin Wallin,Allévägen 34,2025-01-16,13:00,15:00,Lotta,First visit
-Magnus Sjöberg,Strandgatan 56,2025-01-17,10:00,12:00,Meera,21
-Helena Viklund,Skolgatan 78,2025-01-18,14:00,16:00,Alice,14
-Per Öberg,Torggatan 90,2025-01-19,09:00,11:00,Steve,7
-Ingrid Ek,Industrigatan 23,2025-01-20,13:00,15:00,Hefa,90
-Thomas Lind,Villagatan 45,2025-01-21,09:00,11:00,Lotta,30
-Christina Holm,Trädgårdsgatan 67,2025-01-22,13:00,15:00,Meera,45
-Fredrik Sandberg,Bergsgatan 89,2025-01-23,10:00,12:00,Alice,60
-Marie Björk,Ängsgatan 12,2025-01-24,14:00,16:00,Steve,First visit
-Olof Strand,Lindgatan 34,2025-01-25,09:00,11:00,Hefa,14
-Elin Forsberg,Centralgatan 56,2025-01-26,13:00,15:00,Lotta,28
-Gustav Hedlund,Backgatan 78,2025-01-27,10:00,12:00,Meera,7
-Astrid Nordin,Sjögatan 90,2025-01-28,14:00,16:00,Alice,45
-Daniel Isaksson,Höjdgatan 23,2025-01-29,09:00,11:00,Steve,60
-Margareta Åberg,Tallgatan 45,2025-01-30,13:00,15:00,Hefa,30
-Robert Lundin,Grangatan 67,2025-01-31,10:00,12:00,Lotta,21
+Maria Svensson,Norra gatan 45,2025-01-01,13:00,15:00,Meera,14
+Erik Lindgren,Västergatan 8,2025-01-02,10:00,12:00,Alice,First visit
+Sara Bergman,Östragatan 23,2025-01-02,14:00,16:00,Steve,45
+Johan Nilsson,Kungsgatan 67,2025-01-03,09:00,11:00,Hefa,21
+Lisa Andersson,Drottninggatan 34,2025-01-03,13:00,15:00,Lotta,60
+Peter Ekström,Storgatan 89,2025-01-04,10:00,12:00,Meera,First visit
+Emma Johansson,Järnvägsgatan 12,2025-01-04,14:00,16:00,Alice,30
+Karl Gustafsson,Hamngatan 56,2025-01-05,09:00,11:00,Steve,90
+Anna Holm,Kyrkogatan 78,2025-01-05,13:00,15:00,Hefa,7
+Mikael Berg,Åsgatan 45,2025-01-06,09:00,11:00,Lotta,14
+Sofia Löfgren,Ringvägen 23,2025-01-06,13:00,15:00,Meera,28
+Lars Nyström,Parkgatan 67,2025-01-07,10:00,12:00,Alice,45
+Eva Malmström,Sveagatan 89,2025-01-07,14:00,16:00,Steve,60
+Nils Persson,Brogatan 12,2025-01-08,09:00,11:00,Hefa,30
+Karin Wallin,Allévägen 34,2025-01-08,13:00,15:00,Lotta,First visit
+Magnus Sjöberg,Strandgatan 56,2025-01-09,10:00,12:00,Meera,21
+Helena Viklund,Skolgatan 78,2025-01-09,14:00,16:00,Alice,14
+Per Öberg,Torggatan 90,2025-01-10,09:00,11:00,Steve,7
+Ingrid Ek,Industrigatan 23,2025-01-10,13:00,15:00,Hefa,90
+Thomas Lind,Villagatan 45,2025-01-11,09:00,11:00,Lotta,30
+Christina Holm,Trädgårdsgatan 67,2025-01-11,13:00,15:00,Meera,45
+Fredrik Sandberg,Bergsgatan 89,2025-01-12,10:00,12:00,Alice,60
+Marie Björk,Ängsgatan 12,2025-01-12,14:00,16:00,Steve,First visit
+Olof Strand,Lindgatan 34,2025-01-13,09:00,11:00,Hefa,14
+Elin Forsberg,Centralgatan 56,2025-01-13,13:00,15:00,Lotta,28
+Gustav Hedlund,Backgatan 78,2025-01-14,10:00,12:00,Meera,7
+Astrid Nordin,Sjögatan 90,2025-01-14,14:00,16:00,Alice,45
+Daniel Isaksson,Höjdgatan 23,2025-01-15,09:00,11:00,Steve,60
+Margareta Åberg,Tallgatan 45,2025-01-15,13:00,15:00,Hefa,30
+Robert Lundin,Grangatan 67,2025-01-16,10:00,12:00,Lotta,21
+Birgitta Ekman,Storgatan 34,2025-01-16,14:00,16:00,Meera,14
 Erik Andersson,Kungsgatan 15,2025-02-01,09:00,11:00,Meera,30
 Anna Lindström,Östergatan 8,2025-02-01,13:00,15:00,Alice,14
 Lars Johansson,Strömstadsvägen 45,2025-02-02,10:00,12:00,Steve,First visit
