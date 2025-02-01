@@ -45,21 +45,20 @@ appointments_df = load_appointments()
 # Sidebar - Add New Appointment
 with st.sidebar:
     st.header("Add New Appointment")
-    
+
     new_name = st.text_input("Customer Name")
     new_address = st.text_area("Address")
     new_date = st.date_input("Appointment Date")
     new_start_time = st.time_input("Start Time", value=datetime.strptime("09:00", "%H:%M"))
     new_end_time = st.time_input("End Time", value=datetime.strptime("11:00", "%H:%M"))
     new_staff = st.text_input("Staff Name")
-    
+
     if st.button("Add Appointment"):
         if new_name and new_address and new_staff:
-            # Calculate days since last visit
             days_since = calculate_days_since_last_visit(
                 appointments_df, new_name, new_date
             )
-            
+
             new_appointment = pd.DataFrame([{
                 'Name': new_name,
                 'Address': new_address,
@@ -69,7 +68,7 @@ with st.sidebar:
                 'Staff_name': new_staff,
                 'Days_since_last_visit': days_since if days_since is not None else 'First visit'
             }])
-            
+
             appointments_df = pd.concat([appointments_df, new_appointment], ignore_index=True)
             save_appointments(appointments_df)
             st.session_state.appointments_changed = True
@@ -95,32 +94,33 @@ if not appointments_df.empty:
     filtered_df = appointments_df[
         appointments_df['Appointment_date'].dt.date == date_filter
     ]
-    
+
     filtered_df = filtered_df.sort_values(by=sort_by)
-    
+
     if filtered_df.empty:
         st.info("No appointments found for selected date.")
     else:
-        for _, appointment in filtered_df.iterrows():
-            with st.container():
-                st.markdown("""
-                    <div class="appointment-card">
-                        <h3>{}</h3>
-                        <p><strong>Date:</strong> {}</p>
-                        <p><strong>Time:</strong> {} - {}</p>
-                        <p><strong>Address:</strong> {}</p>
-                        <p><strong>Staff:</strong> {}</p>
-                        <p><strong>Last Visit:</strong> {}</p>
-                    </div>
-                """.format(
-                    appointment['Name'],
-                    format_appointment_date(appointment['Appointment_date']),
-                    appointment['Start_time'],
-                    appointment['End_time'],
-                    appointment['Address'],
-                    appointment['Staff_name'],
-                    f"{appointment['Days_since_last_visit']} days ago" if isinstance(appointment['Days_since_last_visit'], (int, float)) else appointment['Days_since_last_visit']
-                ), unsafe_allow_html=True)
+        # Format the date and time columns for display
+        display_df = filtered_df.copy()
+        display_df['Appointment_date'] = display_df['Appointment_date'].apply(format_appointment_date)
+        display_df['Time'] = display_df.apply(lambda x: f"{x['Start_time']} - {x['End_time']}", axis=1)
+        display_df['Last Visit'] = display_df['Days_since_last_visit'].apply(
+            lambda x: f"{x} days ago" if isinstance(x, (int, float)) else x
+        )
+
+        # Reorder and rename columns for display
+        display_df = display_df[[
+            'Name', 'Address', 'Appointment_date', 'Time', 'Staff_name', 'Last Visit'
+        ]].rename(columns={
+            'Appointment_date': 'Date',
+            'Staff_name': 'Staff'
+        })
+
+        st.dataframe(
+            display_df,
+            hide_index=True,
+            use_container_width=True
+        )
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
 
