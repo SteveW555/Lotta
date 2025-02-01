@@ -143,12 +143,10 @@ if not appointments_df.empty:
         })
 
         # Show the dataframe with clickable rows
-        selected_indices = st.data_editor(
+        st.dataframe(
             display_df,
             hide_index=True,
             use_container_width=True,
-            key='appointments_table',
-            disabled=True,  # Disable cell editing
             column_config={
                 "Name": st.column_config.Column(
                     "Name",
@@ -177,18 +175,17 @@ if not appointments_df.empty:
                     width="small",
                 ),
             },
-            on_change=None,
-            height=400,  # Fixed height to make scrolling smoother
-            num_rows="dynamic"
+            height=400  # Fixed height to make scrolling smoother
         )
 
-        # Handle row selection
-        if not selected_indices.empty:
-            selected_index = selected_indices.index[0]  # Get the first selected row's index
-            selected_customer = filtered_df.iloc[selected_index]['Name']
-            if selected_customer != st.session_state.get('selected_customer'):
-                st.session_state.selected_customer = selected_customer
-                st.rerun()  # Ensure the UI updates when a new customer is selected
+        # Add clickable names list
+        st.write("Click on a customer name to view details:")
+        for idx, row in display_df.iterrows():
+            if st.button(row['Name'], key=f"btn_{idx}"):
+                selected_customer = filtered_df.iloc[idx]['Name']
+                if selected_customer != st.session_state.get('selected_customer'):
+                    st.session_state.selected_customer = selected_customer
+                    st.rerun()
 
         # Show customer details if a customer is selected
         if st.session_state.selected_customer:
