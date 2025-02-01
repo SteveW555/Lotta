@@ -4,6 +4,14 @@ from datetime import datetime, timedelta
 import os
 from utils.date_helpers import format_appointment_date, calculate_days_since_last_visit
 
+# Ensure data directory exists
+DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+if not os.path.exists(DATA_DIR):
+    os.makedirs(DATA_DIR)
+
+# Define the data file path
+DATA_FILE = os.path.join(DATA_DIR, 'appointments.csv')
+
 # Page configuration
 st.set_page_config(
     page_title="Lotta's Appointments",
@@ -34,37 +42,44 @@ if 'edit_data' not in st.session_state:
         'Staff': ''
     }
 
-# Data file path
-DATA_FILE = 'data/appointments.csv'
-
 def load_appointments():
     """Load appointments from CSV file"""
     if not os.path.exists(DATA_FILE):
+        # Create an empty DataFrame with the correct columns
+        df = pd.DataFrame(columns=[
+            'Name', 'Address', 'Appointment_date', 'Start_time',
+            'End_time', 'Staff_name', 'Days_since_last_visit'
+        ])
+        # Save it to create the file
+        df.to_csv(DATA_FILE, index=False)
+        return df
+    
+    try:
+        df = pd.read_csv(DATA_FILE)
+        # Convert Appointment_date to datetime if it exists
+        if 'Appointment_date' in df.columns:
+            df['Appointment_date'] = pd.to_datetime(df['Appointment_date'], errors='coerce')
+            # Replace NaT with None
+            df['Appointment_date'] = df['Appointment_date'].where(pd.notna(df['Appointment_date']), None)
+            # Sort by date
+            df = df.sort_values(by='Appointment_date', ascending=True)
+        return df
+    except Exception as e:
+        st.error(f"Error loading appointments: {str(e)}")
         return pd.DataFrame(columns=[
             'Name', 'Address', 'Appointment_date', 'Start_time',
             'End_time', 'Staff_name', 'Days_since_last_visit'
         ])
-    df = pd.read_csv(DATA_FILE)
-    # Convert Appointment_date to datetime if it exists
-    if 'Appointment_date' in df.columns:
-        df['Appointment_date'] = pd.to_datetime(df['Appointment_date'], errors='coerce')
-        # Replace NaT with None
-        df['Appointment_date'] = df['Appointment_date'].where(pd.notna(df['Appointment_date']), None)
-        # Sort by date
-        df = df.sort_values(by='Appointment_date', ascending=True)
-    return df
 
 def save_appointments(df):
     """Save appointments to CSV file"""
-    save_df = df.copy()
-    if 'Appointment_date' in save_df.columns:
-        # Convert to datetime, handling None values
-        save_df['Appointment_date'] = pd.to_datetime(save_df['Appointment_date'], errors='coerce')
-        # Convert valid dates to string format
-        save_df.loc[save_df['Appointment_date'].notna(), 'Appointment_date'] = \
-            save_df.loc[save_df['Appointment_date'].notna(), 'Appointment_date'].dt.strftime('%Y-%m-%d')
-    os.makedirs('data', exist_ok=True)
-    save_df.to_csv(DATA_FILE, index=False)
+    try:
+        # Ensure data directory exists
+        if not os.path.exists(DATA_DIR):
+            os.makedirs(DATA_DIR)
+        df.to_csv(DATA_FILE, index=False)
+    except Exception as e:
+        st.error(f"Error saving appointments: {str(e)}")
 
 def get_customer_appointments(df, customer_name):
     """Get past, current, and next appointments for a customer"""
