@@ -164,7 +164,7 @@ if not appointments_df.empty:
                 ),
                 "Time": st.column_config.Column(
                     "Time",
-                    width="small"
+                    width=120
                 ),
                 "Staff": st.column_config.Column(
                     "Staff",
