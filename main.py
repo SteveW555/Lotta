@@ -142,30 +142,41 @@ if not appointments_df.empty:
             'Staff_name': 'Staff'
         })
 
-        # Add CSS class for current date rows
-        row_styles = []
-        for i in range(len(filtered_df)):
-            row_date = filtered_df.iloc[i]['Appointment_date'].date()
-            is_current = row_date == pd.to_datetime(date_filter).date()
-            row_styles.append({'backgroundColor': '#f5f5f5' if is_current else None})
-
         # Show the dataframe with clickable rows
         selected_indices = st.data_editor(
             display_df,
             hide_index=True,
             use_container_width=True,
             key='appointments_table',
-            disabled=False,  # Changed to False to allow clicking
+            disabled=False,
             column_config={
-                "Name": st.column_config.Column(width="70%"),
-                "Address": st.column_config.Column(width="60%"),
-                "Date": st.column_config.Column(width="medium"),
-                "Time": st.column_config.Column(width="small"),
-                "Staff": st.column_config.Column(width="small"),
-                "Last Visit": st.column_config.Column(width="small"),
-            },
-            on_change=None,
-            row_style=row_styles
+                "Name": st.column_config.Column(
+                    "Name",
+                    width="medium",
+                    help="Customer name",
+                ),
+                "Address": st.column_config.Column(
+                    "Address",
+                    width="medium",
+                    help="Customer address",
+                ),
+                "Date": st.column_config.Column(
+                    "Date",
+                    width="small",
+                ),
+                "Time": st.column_config.Column(
+                    "Time",
+                    width="small",
+                ),
+                "Staff": st.column_config.Column(
+                    "Staff",
+                    width="small",
+                ),
+                "Last Visit": st.column_config.Column(
+                    "Last Visit",
+                    width="small",
+                ),
+            }
         )
 
         # Handle row selection - Improved state handling
@@ -194,8 +205,8 @@ if not appointments_df.empty:
                     {f"<p><strong>Next Visit:</strong> {format_appointment_date(next_appt['Appointment_date'])} ({next_appt['Start_time']} - {next_appt['End_time']})</p>" if next_appt is not None else ""}
                 </div>
                 """, unsafe_allow_html=True)
-    else:
-        st.info("No appointments yet. Add your first appointment using the sidebar form.")
+else:
+    st.info("No appointments yet. Add your first appointment using the sidebar form.")
 
 # Export functionality
 if not appointments_df.empty:
