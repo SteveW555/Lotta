@@ -150,17 +150,17 @@ if not appointments_df.empty:
             column_config={
                 "Name": st.column_config.Column(
                     "Name",
-                    width=200,  # Reduced from 500
+                    width=200,
                     help="Customer name"
                 ),
                 "Address": st.column_config.Column(
                     "Address",
-                    width=250,  # Reduced from 400
+                    width=200,
                     help="Customer address"
                 ),
                 "Date": st.column_config.Column(
                     "Date",
-                    width="small"
+                    width=150
                 ),
                 "Time": st.column_config.Column(
                     "Time",
@@ -179,12 +179,3 @@ if not appointments_df.empty:
         )
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
-
-# Export functionality
-if not appointments_df.empty:
-    st.download_button(
-        label="Export Appointments (CSV)",
-        data=appointments_df.to_csv(index=False).encode('utf-8'),
-        file_name='appointments_export.csv',
-        mime='text/csv'
-    )
