@@ -93,7 +93,7 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.subheader("Filter Appointments")
-    show_all = st.checkbox("Show all appointments", value=False)
+    show_all = st.checkbox("Show all appointments", value=True)
     date_filter = st.date_input("Select Date", value=datetime.now())
 
 with col2:
@@ -119,7 +119,7 @@ if not appointments_df.empty:
         filtered_df = appointments_df[
             (appointments_df['Appointment_date'] >= date_range_start) &
             (appointments_df['Appointment_date'] <= date_range_end)
-        ] if not show_all else appointments_df
+        ]
 
     filtered_df = filtered_df.sort_values(by=sort_by)
 
@@ -175,7 +175,7 @@ if not appointments_df.empty:
                     width="small"
                 )
             },
-            height=600  # Increased from 400 to show more rows
+            height=600
         )
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
