@@ -112,9 +112,6 @@ appointments_df = load_appointments()
 with st.sidebar:
     st.header("Add New Appointment")
 
-    # Add appointment form
-    st.markdown("### Add New Appointment")
-    
     # Get unique customers and their addresses
     if not appointments_df.empty:
         customer_options = ["-New Customer-"] + sorted(appointments_df[['Name', 'Address']].drop_duplicates().apply(
@@ -137,35 +134,25 @@ with st.sidebar:
         key="customer_selector",
         index=customer_options.index(st.session_state.selected_customer)
     )
-    
+
     # Update session state
-    st.session_state.selected_customer = selected_customer
-    
-    # Initialize default values
-    default_name = ""
-    default_address = ""
-    
-    # If a customer is selected, get their details
-    if selected_customer != "-New Customer-":
-        # Extract name from the selection (remove the address part)
-        selected_name = selected_customer.split(" (")[0]
-        # Get the customer's details
-        customer_details = appointments_df[appointments_df['Name'] == selected_name].iloc[0]
-        default_name = customer_details['Name']
-        default_address = customer_details['Address']
-    
-    # Use session state for form values
-    if 'form_name' not in st.session_state:
-        st.session_state.form_name = default_name
-    if 'form_address' not in st.session_state:
-        st.session_state.form_address = default_address
-    
+    if selected_customer != st.session_state.selected_customer:
+        st.session_state.selected_customer = selected_customer
+        # Reset form values when customer changes
+        if selected_customer == "-New Customer-":
+            st.session_state.form_name = ""
+            st.session_state.form_address = ""
+        else:
+            # Extract name from the selection (remove the address part)
+            selected_name = selected_customer.split(" (")[0]
+            # Get the customer's details
+            customer_details = appointments_df[appointments_df['Name'] == selected_name].iloc[0]
+            st.session_state.form_name = customer_details['Name']
+            st.session_state.form_address = customer_details['Address']
+        st.rerun()
+
     new_name = st.text_input("Customer Name", value=st.session_state.form_name, key="name_input")
     new_address = st.text_area("Address", value=st.session_state.form_address, key="address_input")
-    
-    # Update form values in session state
-    st.session_state.form_name = new_name
-    st.session_state.form_address = new_address
     
     new_date = st.date_input("Appointment Date")
     new_start_time = st.time_input("Start Time", value=datetime.strptime("09:00", "%H:%M"), step=1800)
