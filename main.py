@@ -143,10 +143,11 @@ if not appointments_df.empty:
         })
 
         # Show the dataframe with clickable rows
-        st.dataframe(
+        selected_rows = st.data_editor(
             display_df,
             hide_index=True,
             use_container_width=True,
+            key='appointments_table',
             column_config={
                 "Name": st.column_config.Column(
                     "Name",
@@ -175,14 +176,14 @@ if not appointments_df.empty:
                     width="small",
                 ),
             },
+            disabled=True,
             height=400  # Fixed height to make scrolling smoother
         )
 
-        # Add clickable names list
-        st.write("Click on a customer name to view details:")
-        for idx, row in display_df.iterrows():
-            if st.button(row['Name'], key=f"btn_{idx}"):
-                selected_customer = filtered_df.iloc[idx]['Name']
+        if st.session_state.get('appointments_table') is not None and 'edited_rows' in st.session_state.appointments_table:
+            edited_idx = list(st.session_state.appointments_table['edited_rows'].keys())[0]
+            if edited_idx < len(filtered_df):
+                selected_customer = filtered_df.iloc[edited_idx]['Name']
                 if selected_customer != st.session_state.get('selected_customer'):
                     st.session_state.selected_customer = selected_customer
                     st.rerun()
