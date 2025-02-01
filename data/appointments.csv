@@ -1,20 +1,18 @@
 Name,Address,Appointment_date,Start_time,End_time,Staff_name,Days_since_last_visit
+Sara Bergman,Östragatan 23,1900-02-01,14:15,16:00,Alice,45
 Anders Karlsson,Södra vägen 12,2025-01-01,09:00,11:00,Lotta,30
 Maria Svensson,Norra gatan 45,2025-01-01,13:00,15:00,Meera,14
-Erik Lindgren,Västergatan 8,2025-01-02,10:00,12:00,Alice,First visit
-Sara Bergman,Östragatan 23,2025-01-02,14:00,16:00,Steve,45
+Erik Lindgren,Västergatan 8,2025-01-02,10:30,12:00,Alice,First visit
 Johan Nilsson,Kungsgatan 67,2025-01-03,09:00,11:00,Hefa,21
-Lisa Andersson,Drottninggatan 34,2025-01-03,13:00,15:00,Lotta,60
-Peter Ekström,Storgatan 89,2025-01-04,10:00,12:00,Meera,First visit
 Emma Johansson,Järnvägsgatan 12,2025-01-04,14:00,16:00,Alice,30
 Karl Gustafsson,Hamngatan 56,2025-01-05,09:00,11:00,Steve,90
 Anna Holm,Kyrkogatan 78,2025-01-05,13:00,15:00,Hefa,7
-Mikael Berg,Åsgatan 45,2025-01-06,09:00,11:00,Lotta,14
+Mikael Berg,Åsgatan 45,2025-01-06,10:45,11:15,Lotta,14
 Sofia Löfgren,Ringvägen 23,2025-01-06,13:00,15:00,Meera,28
 Lars Nyström,Parkgatan 67,2025-01-07,10:00,12:00,Alice,45
 Eva Malmström,Sveagatan 89,2025-01-07,14:00,16:00,Steve,60
-Nils Persson,Brogatan 12,2025-01-08,09:00,11:00,Hefa,30
 Karin Wallin,Allévägen 34,2025-01-08,13:00,15:00,Lotta,First visit
+Nils Persson,Brogatan 12,2025-01-08,09:00,11:00,Hefa,30
 Magnus Sjöberg,Strandgatan 56,2025-01-09,10:00,12:00,Meera,21
 Helena Viklund,Skolgatan 78,2025-01-09,14:00,16:00,Alice,14
 Per Öberg,Torggatan 90,2025-01-10,09:00,11:00,Steve,7
@@ -29,8 +27,9 @@ Gustav Hedlund,Backgatan 78,2025-01-14,10:00,12:00,Meera,7
 Astrid Nordin,Sjögatan 90,2025-01-14,14:00,16:00,Alice,45
 Daniel Isaksson,Höjdgatan 23,2025-01-15,09:00,11:00,Steve,60
 Margareta Åberg,Tallgatan 45,2025-01-15,13:00,15:00,Hefa,30
-Robert Lundin,Grangatan 67,2025-01-16,10:00,12:00,Lotta,21
 Birgitta Ekman,Storgatan 34,2025-01-16,14:00,16:00,Meera,14
+Robert Lundin,Grangatan 67,2025-01-16,10:00,12:00,Lotta,21
+Anna Holm,Kyrkogatan 78,2025-02-01,19:00,23:30,Lotta,27
 Erik Andersson,Kungsgatan 15,2025-02-01,09:00,11:00,Meera,30
 Anna Lindström,Östergatan 8,2025-02-01,13:00,15:00,Alice,14
 Lars Johansson,Strömstadsvägen 45,2025-02-02,10:00,12:00,Steve,First visit
@@ -43,8 +42,8 @@ Nils Pettersson,Asplundsgatan 5,2025-02-05,09:00,11:00,Hefa,90
 Ingrid Blomqvist,Södra Hamngatan 28,2025-02-05,13:00,15:00,Lotta,7
 Oscar Lundqvist,Kilbäcksgatan 42,2025-02-06,09:00,11:00,Meera,14
 Birgitta Falk,Junogatan 15,2025-02-06,13:00,15:00,Alice,45
-Stefan Holmberg,Göteborgsvägen 73,2025-02-07,10:00,12:00,Steve,30
 Kristina Jansson,Kungsgatan 91,2025-02-07,14:00,16:00,Hefa,60
+Stefan Holmberg,Göteborgsvägen 73,2025-02-07,10:00,12:00,Steve,30
 David Karlsson,Edingsvägen 26,2025-02-08,09:00,11:00,Lotta,First visit
 Lena Berggren,Stenbacken 8,2025-02-08,13:00,15:00,Meera,21
 Mikael Sundberg,Bävevägen 52,2025-02-09,10:00,12:00,Alice,7
@@ -59,3 +58,4 @@ Martin Ekman,Västgötavägen 83,2025-02-13,10:00,12:00,Lotta,21
 Camilla Hjalmarsson,Bogärdesgatan 11,2025-02-13,14:00,16:00,Meera,7
 Tommy Axelsson,Norrgatan 47,2025-02-14,09:00,11:00,Alice,45
 Julia Larsson,Sunningevägen 25,2025-02-14,13:00,15:00,Steve,30
+Lisa Andersson,Drottninggatan 34,,13:30,15:00,Lotta,60

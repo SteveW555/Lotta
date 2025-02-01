@@ -1,10 +1,14 @@
 from datetime import datetime
 import pandas as pd
 
-def format_appointment_date(date_str):
-    """Convert date string to 'Thursday dd-mm' format"""
-    date_obj = pd.to_datetime(date_str)
-    return date_obj.strftime("%A %d-%m")
+def format_appointment_date(date_obj):
+    """Convert date object to 'Thursday dd-mm' format"""
+    try:
+        if pd.isna(date_obj):
+            return "No date"
+        return pd.to_datetime(date_obj).strftime("%A %d-%m")
+    except:
+        return "Invalid date"
 
 def calculate_days_since_last_visit(appointments_df, customer_name, current_date):
     """Calculate days since last visit for a customer"""

@@ -22,6 +22,17 @@ if 'selected_customer' not in st.session_state:
     st.session_state.selected_customer = None
 if 'selected_row' not in st.session_state:
     st.session_state.selected_row = None
+if 'editing_appointment' not in st.session_state:
+    st.session_state.editing_appointment = None
+if 'edit_data' not in st.session_state:
+    st.session_state.edit_data = {
+        'Name': '',
+        'Address': '',
+        'Date': datetime.now().date(),
+        'Start_time': '09:00',
+        'End_time': '10:00',
+        'Staff': ''
+    }
 
 # Data file path
 DATA_FILE = 'data/appointments.csv'
@@ -33,12 +44,27 @@ def load_appointments():
             'Name', 'Address', 'Appointment_date', 'Start_time',
             'End_time', 'Staff_name', 'Days_since_last_visit'
         ])
-    return pd.read_csv(DATA_FILE)
+    df = pd.read_csv(DATA_FILE)
+    # Convert Appointment_date to datetime if it exists
+    if 'Appointment_date' in df.columns:
+        df['Appointment_date'] = pd.to_datetime(df['Appointment_date'], errors='coerce')
+        # Replace NaT with None
+        df['Appointment_date'] = df['Appointment_date'].where(pd.notna(df['Appointment_date']), None)
+        # Sort by date
+        df = df.sort_values(by='Appointment_date', ascending=True)
+    return df
 
 def save_appointments(df):
     """Save appointments to CSV file"""
+    save_df = df.copy()
+    if 'Appointment_date' in save_df.columns:
+        # Convert to datetime, handling None values
+        save_df['Appointment_date'] = pd.to_datetime(save_df['Appointment_date'], errors='coerce')
+        # Convert valid dates to string format
+        save_df.loc[save_df['Appointment_date'].notna(), 'Appointment_date'] = \
+            save_df.loc[save_df['Appointment_date'].notna(), 'Appointment_date'].dt.strftime('%Y-%m-%d')
     os.makedirs('data', exist_ok=True)
-    df.to_csv(DATA_FILE, index=False)
+    save_df.to_csv(DATA_FILE, index=False)
 
 def get_customer_appointments(df, customer_name):
     """Get past, current, and next appointments for a customer"""
@@ -52,6 +78,12 @@ def get_customer_appointments(df, customer_name):
 
     return past_appt, current_appt, next_appt
 
+def format_appointment_date(date):
+    """Format the appointment date"""
+    if pd.isna(date):
+        return ''
+    return date.strftime("%Y-%m-%d")  # Changed to YYYY-MM-DD format for proper sorting
+
 # Title
 st.markdown('<h1 class="hero-title">Lotta\'s Appointments</h1>', unsafe_allow_html=True)
 
@@ -62,12 +94,39 @@ appointments_df = load_appointments()
 with st.sidebar:
     st.header("Add New Appointment")
 
-    new_name = st.text_input("Customer Name")
-    new_address = st.text_area("Address")
+    # Add appointment form
+    st.markdown("### Add New Appointment")
+    
+    # Get unique customers and their addresses
+    if not appointments_df.empty:
+        customer_options = ["-New Customer-"] + sorted(appointments_df[['Name', 'Address']].drop_duplicates().apply(
+            lambda x: f"{x['Name']} ({x['Address']})", axis=1
+        ).tolist())
+    else:
+        customer_options = ["-New Customer-"]
+    
+    selected_customer = st.selectbox("Select Existing Customer", options=customer_options, key="customer_selector")
+    
+    # Initialize default values
+    default_name = ""
+    default_address = ""
+    
+    # If a customer is selected, get their details
+    if selected_customer != "-New Customer-":
+        # Extract name from the selection (remove the address part)
+        selected_name = selected_customer.split(" (")[0]
+        # Get the customer's details
+        customer_details = appointments_df[appointments_df['Name'] == selected_name].iloc[0]
+        default_name = customer_details['Name']
+        default_address = customer_details['Address']
+    
+    new_name = st.text_input("Customer Name", value=default_name)
+    new_address = st.text_area("Address", value=default_address)
     new_date = st.date_input("Appointment Date")
-    new_start_time = st.time_input("Start Time", value=datetime.strptime("09:00", "%H:%M"))
-    new_end_time = st.time_input("End Time", value=datetime.strptime("11:00", "%H:%M"))
-    new_staff = st.text_input("Staff Name")
+    new_start_time = st.time_input("Start Time", value=datetime.strptime("09:00", "%H:%M"), step=1800)
+    new_end_time = st.time_input("End Time", value=datetime.strptime("11:00", "%H:%M"), step=1800)
+    staff_options = sorted(appointments_df['Staff_name'].unique().tolist())
+    new_staff = st.selectbox("Staff", options=staff_options, index=0)
 
     if st.button("Add Appointment"):
         if new_name and new_address and new_staff:
@@ -78,17 +137,19 @@ with st.sidebar:
             new_appointment = pd.DataFrame([{
                 'Name': new_name,
                 'Address': new_address,
-                'Appointment_date': new_date,
+                'Appointment_date': pd.Timestamp(new_date),
                 'Start_time': new_start_time.strftime("%H:%M"),
                 'End_time': new_end_time.strftime("%H:%M"),
                 'Staff_name': new_staff,
                 'Days_since_last_visit': days_since if days_since is not None else 'First visit'
             }])
-
+            
             appointments_df = pd.concat([appointments_df, new_appointment], ignore_index=True)
+            appointments_df = appointments_df.sort_values(by='Appointment_date', ascending=True)
+            
             save_appointments(appointments_df)
-            st.session_state.appointments_changed = True
             st.success("Appointment added successfully!")
+            st.rerun()
 
 # Main content - View Appointments
 col1, col2 = st.columns([2, 1])
@@ -110,6 +171,9 @@ if not appointments_df.empty:
     appointments_df['Appointment_date'] = pd.to_datetime(appointments_df['Appointment_date'])
     current_date = pd.to_datetime(datetime.now().date())
 
+    # Default sort by date
+    appointments_df = appointments_df.sort_values(by='Appointment_date')
+
     if show_all:
         filtered_df = appointments_df
     else:
@@ -123,37 +187,55 @@ if not appointments_df.empty:
             (appointments_df['Appointment_date'] <= date_range_end)
         ]
 
-    filtered_df = filtered_df.sort_values(by=sort_by)
+    # Apply sorting if specified
+    if sort_by != 'Appointment_date':
+        filtered_df = filtered_df.sort_values(by=sort_by)
 
     if filtered_df.empty:
         st.info("No appointments found for selected date range.")
     else:
+        # Get unique staff members
+        staff_options = sorted(filtered_df['Staff_name'].unique().tolist())
+        
         # Format the date and time columns for display
         display_df = filtered_df.copy()
-        display_df['Appointment_date'] = display_df['Appointment_date'].apply(format_appointment_date)
+        # Keep both raw and formatted dates
+        display_df['raw_date'] = display_df['Appointment_date']
+        
+        # First sort by date
+        display_df = display_df.sort_values(by='Appointment_date', ascending=True)
+        
+        # Then format the date for display with NaT handling
+        def format_date_with_indicator(x):
+            if pd.isna(x):
+                return ''
+            # Format as YYYY-MM-DD Day for proper sorting, but show day name for readability
+            date_str = x.strftime('%Y-%m-%d %A')
+            return f"🟢 {date_str}" if x.date() == current_date.date() else date_str
+        
+        display_df['Date'] = display_df['Appointment_date'].apply(format_date_with_indicator)
         display_df['Time'] = display_df.apply(lambda x: f"{x['Start_time']} - {x['End_time']}", axis=1)
         display_df['Last Visit'] = display_df['Days_since_last_visit'].apply(
             lambda x: f"{x} days ago" if isinstance(x, (int, float)) else x
         )
 
         # Reorder and rename columns for display
-        display_df = display_df[[
-            'Name', 'Address', 'Appointment_date', 'Time', 'Staff_name', 'Last Visit'
-        ]].rename(columns={
-            'Appointment_date': 'Date',
+        columns_to_show = ['Name', 'Address', 'Date', 'Time', 'Staff_name', 'Last Visit']
+        display_columns = {
             'Staff_name': 'Staff'
-        })
+        }
+        
+        # Create a copy with only display columns and sort by date
+        display_view = display_df[columns_to_show].rename(columns=display_columns)
+        display_view = display_view.sort_values(by='Date', ascending=True)
+        
+        # Add selection column
+        if 'selected' not in display_view.columns:
+            display_view.insert(0, 'selected', False)
 
-        # Add a selection column to the display dataframe
-        display_df = display_df.copy()
-        if 'selected' not in display_df.columns:
-            display_df['selected'] = False
-
-        # Show the dataframe with increased height and make it interactive
+        # Add the selection column
         edited_df = st.data_editor(
-            display_df,
-            hide_index=True,
-            use_container_width=True,
+            display_view,
             column_config={
                 "selected": st.column_config.CheckboxColumn(
                     "Select",
@@ -163,17 +245,15 @@ if not appointments_df.empty:
                 ),
                 "Name": st.column_config.Column(
                     "Name",
-                    width=200,
-                    help="Customer name"
+                    width=150
                 ),
                 "Address": st.column_config.Column(
                     "Address",
-                    width=200,
-                    help="Customer address"
+                    width=160
                 ),
                 "Date": st.column_config.Column(
                     "Date",
-                    width=150
+                    width=140
                 ),
                 "Time": st.column_config.Column(
                     "Time",
@@ -185,19 +265,23 @@ if not appointments_df.empty:
                 ),
                 "Last Visit": st.column_config.Column(
                     "Last Visit",
-                    width="small"
+                    width="100"
                 )
             },
             height=400,
             key="appointment_table",
             disabled=["Name", "Address", "Date", "Time", "Staff", "Last Visit"],
-            column_order=["selected", "Name", "Address", "Date", "Time", "Staff", "Last Visit"]
+            column_order=["selected", "Name", "Address", "Date", "Time", "Staff", "Last Visit"],
+            use_container_width=True
         )
 
         # Show detail card for selected rows
         selected_rows = edited_df[edited_df['selected']]
         if not selected_rows.empty:
             for _, row in selected_rows.iterrows():
+                # Get the full row data including raw_date
+                full_row_data = display_df[display_df['Name'] == row['Name']].iloc[0]
+                
                 with st.container():
                     st.markdown(f"### Appointment Details for {row['Name']}")
                     col1, col2 = st.columns(2)
@@ -212,25 +296,90 @@ if not appointments_df.empty:
                         st.markdown(f"**Staff:** {row['Staff']}")
                         st.markdown(f"**Last Visit:** {row['Last Visit']}")
 
-                    # Add buttons for actions
-                    col1, col2, col3 = st.columns(3)
-                    unique_id = row['Name'].replace(" ", "_").lower()
+                    st.markdown("---")  # Add a separator line
+
+                    # Action buttons in a cleaner layout
+                    button_col1, button_col2, button_col3 = st.columns(3)
                     
-                    with col1:
-                        if st.button(f"Edit Appointment", key=f"edit_{unique_id}"):
-                            st.session_state.selected_customer = row['Name']
-                    with col2:
-                        if st.button(f"Cancel Appointment", key=f"cancel_{unique_id}"):
-                            confirm_key = f"confirm_cancel_{unique_id}"
-                            if st.button("Confirm Cancellation", key=confirm_key):
-                                appointments_df = appointments_df[
-                                    appointments_df['Name'] != row['Name']
-                                ]
-                                save_appointments(appointments_df)
+                    with button_col1:
+                        if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
+                            if st.button("✏️ Edit", key=f"edit_{row['Name'].replace(' ', '_').lower()}"):
+                                st.session_state.editing_appointment = row['Name'].replace(" ", "_").lower()
+                                # Split time range into start and end times
+                                time_parts = row['Time'].split(' - ')
+                                start_time = time_parts[0] if len(time_parts) > 0 else "09:00"
+                                end_time = time_parts[1] if len(time_parts) > 1 else "10:00"
+
+                                st.session_state.edit_data = {
+                                    'Name': full_row_data['Name'],
+                                    'Address': full_row_data['Address'],
+                                    'Date': full_row_data['raw_date'].date() if pd.notna(full_row_data['raw_date']) else datetime.now().date(),
+                                    'Start_time': start_time,
+                                    'End_time': end_time,
+                                    'Staff': full_row_data['Staff_name']
+                                }
                                 st.rerun()
-                    with col3:
-                        if st.button(f"Add Note", key=f"note_{unique_id}"):
-                            st.text_area("Add a note for this appointment", key=f"note_text_{unique_id}")
+                        else:
+                            # Show edit form
+                            st.markdown("### Edit Appointment")
+                            edit_col1, edit_col2 = st.columns(2)
+                            
+                            with edit_col1:
+                                new_name = st.text_input("Name", value=st.session_state.edit_data['Name'], key=f"edit_name_{row['Name'].replace(' ', '_').lower()}")
+                                new_address = st.text_input("Address", value=st.session_state.edit_data['Address'], key=f"edit_address_{row['Name'].replace(' ', '_').lower()}")
+                                new_date = st.date_input("Date", value=st.session_state.edit_data['Date'], key=f"edit_date_{row['Name'].replace(' ', '_').lower()}")
+                            
+                            with edit_col2:
+                                new_start_time = st.time_input("Start Time", 
+                                    value=datetime.strptime(st.session_state.edit_data['Start_time'], "%H:%M").time() if isinstance(st.session_state.edit_data['Start_time'], str) else st.session_state.edit_data['Start_time'],
+                                    key=f"edit_start_{row['Name'].replace(' ', '_').lower()}",
+                                    step=1800)  # 30 minutes in seconds
+                                new_end_time = st.time_input("End Time", 
+                                    value=datetime.strptime(st.session_state.edit_data['End_time'], "%H:%M").time() if isinstance(st.session_state.edit_data['End_time'], str) else st.session_state.edit_data['End_time'],
+                                    key=f"edit_end_{row['Name'].replace(' ', '_').lower()}",
+                                    step=1800)  # 30 minutes in seconds
+                                new_staff = st.selectbox("Staff", 
+                                    options=staff_options,
+                                    index=staff_options.index(st.session_state.edit_data['Staff']) if st.session_state.edit_data['Staff'] in staff_options else 0,
+                                    key=f"edit_staff_{row['Name'].replace(' ', '_').lower()}")
+                            
+                            save_col1, save_col2 = st.columns(2)
+                            with save_col1:
+                                if st.button("Save Changes", key=f"save_{row['Name'].replace(' ', '_').lower()}"):
+                                    # Update the appointment in the dataframe
+                                    mask = appointments_df['Name'] == row['Name']
+                                    appointments_df.loc[mask, 'Name'] = new_name
+                                    appointments_df.loc[mask, 'Address'] = new_address
+                                    appointments_df.loc[mask, 'Appointment_date'] = pd.Timestamp(new_date)
+                                    appointments_df.loc[mask, 'Start_time'] = new_start_time.strftime("%H:%M")
+                                    appointments_df.loc[mask, 'End_time'] = new_end_time.strftime("%H:%M")
+                                    appointments_df.loc[mask, 'Staff_name'] = new_staff
+                                    
+                                    # Resort after editing
+                                    appointments_df = appointments_df.sort_values(by='Appointment_date', ascending=True)
+                                    
+                                    save_appointments(appointments_df)
+                                    st.session_state.editing_appointment = None
+                                    st.success("Appointment updated successfully!")
+                                    st.rerun()
+                            
+                            with save_col2:
+                                if st.button("Cancel Edit", key=f"cancel_edit_{row['Name'].replace(' ', '_').lower()}"):
+                                    st.session_state.editing_appointment = None
+                                    st.rerun()
+                    
+                    with button_col2:
+                        if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
+                            if st.button("❌ Cancel", key=f"cancel_{row['Name'].replace(' ', '_').lower()}"):
+                                appointments_df = appointments_df[appointments_df['Name'] != row['Name']]
+                                save_appointments(appointments_df)
+                                st.success("Appointment cancelled successfully!")
+                                st.rerun()
+                    
+                    with button_col3:
+                        if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
+                            if st.button("📝 Add Note", key=f"note_{row['Name'].replace(' ', '_').lower()}"):
+                                st.text_area("Add a note for this appointment", key=f"note_text_{row['Name'].replace(' ', '_').lower()}")
                     
                     if len(selected_rows) > 1:
                         st.markdown("---")
