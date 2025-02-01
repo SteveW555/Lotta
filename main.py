@@ -142,6 +142,11 @@ if not appointments_df.empty:
             'Staff_name': 'Staff'
         })
 
+        # Add CSS class for current date rows
+        row_styles = [{
+            'current-date': filtered_df.iloc[i]['Appointment_date'].date() == current_date.date()
+        } for i in range(len(filtered_df))]
+
         # Show the dataframe with clickable rows
         selected_indices = st.data_editor(
             display_df,
@@ -150,17 +155,18 @@ if not appointments_df.empty:
             key='appointments_table',
             disabled=True,
             column_config={
-                "Name": st.column_config.Column(width="medium"),
-                "Address": st.column_config.Column(width="large"),
+                "Name": st.column_config.Column(width=350),
+                "Address": st.column_config.Column(width=300),
                 "Date": st.column_config.Column(width="medium"),
                 "Time": st.column_config.Column(width="small"),
                 "Staff": st.column_config.Column(width="small"),
                 "Last Visit": st.column_config.Column(width="small"),
-            }
+            },
+            row_style=row_styles
         )
 
         # Handle row selection
-        if st.session_state.get("appointments_table", {}).get("edited_rows", {}):
+        if st.session_state.get('appointments_table', {}).get('edited_rows'):
             selected_index = list(st.session_state.appointments_table['edited_rows'].keys())[0]
             selected_customer = filtered_df.iloc[selected_index]['Name']
             st.session_state.selected_customer = selected_customer
@@ -180,8 +186,8 @@ if not appointments_df.empty:
                     {f"<p><strong>Next Visit:</strong> {format_appointment_date(next_appt['Appointment_date'])} ({next_appt['Start_time']} - {next_appt['End_time']})</p>" if next_appt is not None else ""}
                 </div>
                 """, unsafe_allow_html=True)
-else:
-    st.info("No appointments yet. Add your first appointment using the sidebar form.")
+    else:
+        st.info("No appointments yet. Add your first appointment using the sidebar form.")
 
 # Export functionality
 if not appointments_df.empty:
