@@ -79,6 +79,7 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.subheader("Filter Appointments")
+    show_all = st.checkbox("Show all appointments", value=True)
     date_filter = st.date_input("Select Date", value=datetime.now())
 
 with col2:
@@ -91,9 +92,13 @@ with col2:
 # Filter and sort appointments
 if not appointments_df.empty:
     appointments_df['Appointment_date'] = pd.to_datetime(appointments_df['Appointment_date'])
-    filtered_df = appointments_df[
-        appointments_df['Appointment_date'].dt.date == date_filter
-    ]
+
+    if show_all:
+        filtered_df = appointments_df
+    else:
+        filtered_df = appointments_df[
+            appointments_df['Appointment_date'].dt.date == date_filter
+        ]
 
     filtered_df = filtered_df.sort_values(by=sort_by)
 
