@@ -285,15 +285,15 @@ if not appointments_df.empty:
                 ),
                 "Time": st.column_config.Column(
                     "Time",
-                    width=150
+                    width=105
                 ),
                 "Staff": st.column_config.Column(
                     "Staff",
-                    width=120
+                    width=70
                 ),
                 "Last Visit": st.column_config.Column(
                     "Last Visit",
-                    width=180,
+                    width=85,
                     help="Days since customer's last visit"
                 )
             },
