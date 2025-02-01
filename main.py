@@ -249,7 +249,8 @@ if not appointments_df.empty:
         # Reorder and rename columns for display
         columns_to_show = ['Name', 'Address', 'Date', 'Time', 'Staff_name', 'Last Visit']
         display_columns = {
-            'Staff_name': 'Staff'
+            'Staff_name': 'Staff',
+            'Last Visit': 'Last Visit'  # Ensure column name matches
         }
         
         # Create a copy with only display columns and sort by date
@@ -292,7 +293,8 @@ if not appointments_df.empty:
                 ),
                 "Last Visit": st.column_config.Column(
                     "Last Visit",
-                    width=180
+                    width=180,
+                    help="Days since customer's last visit"
                 )
             },
             height=400,
