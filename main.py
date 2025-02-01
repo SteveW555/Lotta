@@ -50,6 +50,10 @@ def get_customer_appointments(df, customer_name):
 
     return past_appt, current_appt, next_appt
 
+@st.cache_data
+def get_selected_row_index():
+    return None
+
 # Title
 st.markdown('<h1 class="hero-title">Lotta\'s Appointments</h1>', unsafe_allow_html=True)
 
@@ -143,50 +147,52 @@ if not appointments_df.empty:
         })
 
         # Show the dataframe with clickable rows
-        selected_rows = st.data_editor(
+        st.dataframe(
             display_df,
             hide_index=True,
             use_container_width=True,
-            key='appointments_table',
             column_config={
                 "Name": st.column_config.Column(
                     "Name",
-                    width=500,  # Approximately 70% of typical viewport
-                    help="Customer name",
+                    width=500,
+                    help="Customer name"
                 ),
                 "Address": st.column_config.Column(
                     "Address",
-                    width=400,  # Approximately 60% of typical viewport
-                    help="Customer address",
+                    width=400,
+                    help="Customer address"
                 ),
                 "Date": st.column_config.Column(
                     "Date",
-                    width="small",
+                    width="small"
                 ),
                 "Time": st.column_config.Column(
                     "Time",
-                    width="small",
+                    width="small"
                 ),
                 "Staff": st.column_config.Column(
                     "Staff",
-                    width="small",
+                    width="small"
                 ),
                 "Last Visit": st.column_config.Column(
                     "Last Visit",
-                    width="small",
-                ),
+                    width="small"
+                )
             },
-            disabled=True,
-            height=400  # Fixed height to make scrolling smoother
+            height=400
         )
 
-        if st.session_state.get('appointments_table') is not None and 'edited_rows' in st.session_state.appointments_table:
-            edited_idx = list(st.session_state.appointments_table['edited_rows'].keys())[0]
-            if edited_idx < len(filtered_df):
-                selected_customer = filtered_df.iloc[edited_idx]['Name']
-                if selected_customer != st.session_state.get('selected_customer'):
-                    st.session_state.selected_customer = selected_customer
-                    st.rerun()
+        # Add a selection mechanism using selectbox
+        selected_name = st.selectbox(
+            "Select a customer to view details",
+            options=display_df['Name'].tolist(),
+            index=None,
+            key='customer_selector'
+        )
+
+        if selected_name:
+            st.session_state.selected_customer = selected_name
+            st.experimental_rerun()
 
         # Show customer details if a customer is selected
         if st.session_state.selected_customer:
