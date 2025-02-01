@@ -265,7 +265,7 @@ if not appointments_df.empty:
         )
 
         # Reorder and rename columns for display
-        columns_to_show = ['Name', 'Address', 'Date', 'Time', 'Staff_name', 'Last Visit']
+        columns_to_show = ['Date', 'Name', 'Address', 'Time', 'Staff_name', 'Last Visit']
         display_columns = {
             'Staff_name': 'Staff',
             'Last Visit': 'Last Visit'  # Ensure column name matches
@@ -275,19 +275,14 @@ if not appointments_df.empty:
         display_view = display_df[columns_to_show].rename(columns=display_columns)
         display_view = display_view.sort_values(by='Date', ascending=True)
         
-        # Add selection column
-        if 'selected' not in display_view.columns:
-            display_view.insert(0, 'selected', False)
-
-        # Add the selection column
-        edited_df = st.data_editor(
+        # Display appointments in a data editor
+        selected_rows = st.data_editor(
             display_view,
+            hide_index=True,
             column_config={
-                "selected": st.column_config.CheckboxColumn(
-                    "Select",
-                    help="Select appointment",
-                    default=False,
-                    width="small"
+                "Date": st.column_config.Column(
+                    "Date",
+                    width=180
                 ),
                 "Name": st.column_config.Column(
                     "Name",
@@ -296,10 +291,6 @@ if not appointments_df.empty:
                 "Address": st.column_config.Column(
                     "Address",
                     width=144
-                ),
-                "Date": st.column_config.Column(
-                    "Date",
-                    width=150
                 ),
                 "Time": st.column_config.Column(
                     "Time",
@@ -311,19 +302,17 @@ if not appointments_df.empty:
                 ),
                 "Last Visit": st.column_config.Column(
                     "Last Visit",
-                    width=85,
-                    help="Days since customer's last visit"
+                    width=180
                 )
             },
-            height=400,
-            key="appointment_table",
-            disabled=["Name", "Address", "Date", "Time", "Staff", "Last Visit"],
-            column_order=["selected", "Name", "Address", "Date", "Time", "Staff", "Last Visit"],
-            use_container_width=True
+            key="appointment_editor",
+            disabled=["Date", "Name", "Address", "Time", "Staff", "Last Visit"],
+            num_rows="dynamic",
+            use_container_width=True,
+            selection_mode="single"
         )
 
         # Show detail card for selected rows
-        selected_rows = edited_df[edited_df['selected']]
         if not selected_rows.empty:
             for _, row in selected_rows.iterrows():
                 # Get the full row data including raw_date
