@@ -1,0 +1,26 @@
+.stApp {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+div.css-1r6slb0.e1tzin5v2 {
+    background-color: #ffffff;
+    border: 1px solid #f0f2f6;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.appointment-card {
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    background-color: white;
+}
+
+.hero-title {
+    text-align: center;
+    color: #262730;
+    padding: 2rem 0;
+    font-size: 2.5rem;
+}
