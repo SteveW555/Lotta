@@ -36,4 +36,5 @@ ENV/
 
 # Project specific
 *.csv
+!data/appointments.csv  # Keep initial appointments data
 !data/*.csv  # Keep CSV files in data directory

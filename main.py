@@ -28,6 +28,8 @@ if os.path.exists(css_path):
 # Initialize session state
 if 'appointments_changed' not in st.session_state:
     st.session_state.appointments_changed = False
+if 'appointments_df' not in st.session_state:
+    st.session_state.appointments_df = None
 if 'selected_customer' not in st.session_state:
     st.session_state.selected_customer = None
 if 'selected_row' not in st.session_state:
@@ -45,43 +47,38 @@ if 'edit_data' not in st.session_state:
     }
 
 def load_appointments():
-    """Load appointments from CSV file"""
+    """Load appointments from CSV file or session state"""
+    if st.session_state.appointments_df is not None:
+        return st.session_state.appointments_df
+        
     if not os.path.exists(DATA_FILE):
         # Create an empty DataFrame with the correct columns
         df = pd.DataFrame(columns=[
             'Name', 'Address', 'Appointment_date', 'Start_time',
             'End_time', 'Staff_name', 'Days_since_last_visit'
         ])
-        # Save it to create the file
-        df.to_csv(DATA_FILE, index=False)
-        return df
-    
-    try:
+    else:
         df = pd.read_csv(DATA_FILE)
-        # Convert Appointment_date to datetime if it exists
-        if 'Appointment_date' in df.columns:
-            df['Appointment_date'] = pd.to_datetime(df['Appointment_date'], errors='coerce')
-            # Replace NaT with None
-            df['Appointment_date'] = df['Appointment_date'].where(pd.notna(df['Appointment_date']), None)
-            # Sort by date
-            df = df.sort_values(by='Appointment_date', ascending=True)
-        return df
-    except Exception as e:
-        st.error(f"Error loading appointments: {str(e)}")
-        return pd.DataFrame(columns=[
-            'Name', 'Address', 'Appointment_date', 'Start_time',
-            'End_time', 'Staff_name', 'Days_since_last_visit'
-        ])
+        # Convert date columns
+        df['Appointment_date'] = pd.to_datetime(df['Appointment_date'])
+    
+    st.session_state.appointments_df = df
+    return df
 
 def save_appointments(df):
-    """Save appointments to CSV file"""
-    try:
-        # Ensure data directory exists
-        if not os.path.exists(DATA_DIR):
-            os.makedirs(DATA_DIR)
-        df.to_csv(DATA_FILE, index=False)
-    except Exception as e:
-        st.error(f"Error saving appointments: {str(e)}")
+    """Save appointments to session state and offer download"""
+    st.session_state.appointments_df = df
+    st.session_state.appointments_changed = True
+    
+    # If changes were made, show download button
+    if st.session_state.appointments_changed:
+        csv = df.to_csv(index=False)
+        st.download_button(
+            label="Download appointments data",
+            data=csv,
+            file_name="appointments.csv",
+            mime="text/csv"
+        )
 
 def get_customer_appointments(df, customer_name):
     """Get past, current, and next appointments for a customer"""
@@ -167,6 +164,19 @@ with st.sidebar:
             save_appointments(appointments_df)
             st.success("Appointment added successfully!")
             st.rerun()
+
+# Add file upload option in sidebar
+with st.sidebar:
+    st.write("### Data Management")
+    uploaded_file = st.file_uploader("Upload appointments data", type="csv")
+    if uploaded_file is not None:
+        try:
+            df = pd.read_csv(uploaded_file)
+            df['Appointment_date'] = pd.to_datetime(df['Appointment_date'])
+            st.session_state.appointments_df = df
+            st.success("Data uploaded successfully!")
+        except Exception as e:
+            st.error(f"Error uploading file: {str(e)}")
 
 # Main content - View Appointments
 col1, col2 = st.columns([2, 1])
