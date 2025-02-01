@@ -127,6 +127,10 @@ with st.sidebar:
     if 'selected_customer' not in st.session_state:
         st.session_state.selected_customer = "-New Customer-"
     
+    # Ensure selected customer is in options, otherwise reset to "-New Customer-"
+    if st.session_state.selected_customer not in customer_options:
+        st.session_state.selected_customer = "-New Customer-"
+    
     selected_customer = st.selectbox(
         "Select Existing Customer",
         options=customer_options,
