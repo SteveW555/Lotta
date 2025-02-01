@@ -45,6 +45,10 @@ if 'edit_data' not in st.session_state:
         'End_time': '10:00',
         'Staff': ''
     }
+if 'form_name' not in st.session_state:
+    st.session_state.form_name = ""
+if 'form_address' not in st.session_state:
+    st.session_state.form_address = ""
 
 def load_appointments():
     """Load appointments from CSV file or session state"""
@@ -119,7 +123,19 @@ with st.sidebar:
     else:
         customer_options = ["-New Customer-"]
     
-    selected_customer = st.selectbox("Select Existing Customer", options=customer_options, key="customer_selector")
+    # Use session state to maintain selection
+    if 'selected_customer' not in st.session_state:
+        st.session_state.selected_customer = "-New Customer-"
+    
+    selected_customer = st.selectbox(
+        "Select Existing Customer",
+        options=customer_options,
+        key="customer_selector",
+        index=customer_options.index(st.session_state.selected_customer)
+    )
+    
+    # Update session state
+    st.session_state.selected_customer = selected_customer
     
     # Initialize default values
     default_name = ""
@@ -134,8 +150,19 @@ with st.sidebar:
         default_name = customer_details['Name']
         default_address = customer_details['Address']
     
-    new_name = st.text_input("Customer Name", value=default_name)
-    new_address = st.text_area("Address", value=default_address)
+    # Use session state for form values
+    if 'form_name' not in st.session_state:
+        st.session_state.form_name = default_name
+    if 'form_address' not in st.session_state:
+        st.session_state.form_address = default_address
+    
+    new_name = st.text_input("Customer Name", value=st.session_state.form_name, key="name_input")
+    new_address = st.text_area("Address", value=st.session_state.form_address, key="address_input")
+    
+    # Update form values in session state
+    st.session_state.form_name = new_name
+    st.session_state.form_address = new_address
+    
     new_date = st.date_input("Appointment Date")
     new_start_time = st.time_input("Start Time", value=datetime.strptime("09:00", "%H:%M"), step=1800)
     new_end_time = st.time_input("End Time", value=datetime.strptime("11:00", "%H:%M"), step=1800)
