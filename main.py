@@ -275,8 +275,12 @@ if not appointments_df.empty:
         display_view = display_df[columns_to_show].rename(columns=display_columns)
         display_view = display_view.sort_values(by='Date', ascending=True)
         
+        # Initialize session state for selected customer if not exists
+        if 'selected_customer' not in st.session_state:
+            st.session_state.selected_customer = None
+
         # Display appointments in a data editor
-        selected_rows = st.data_editor(
+        edited_df = st.data_editor(
             display_view,
             hide_index=True,
             column_config={
@@ -284,37 +288,41 @@ if not appointments_df.empty:
                     "Date",
                     width=180
                 ),
-                "Name": st.column_config.Column(
-                    "Name",
-                    width=136
-                ),
-                "Address": st.column_config.Column(
-                    "Address",
-                    width=144
-                ),
                 "Time": st.column_config.Column(
                     "Time",
-                    width=105
+                    width=150
+                ),
+                "Name": st.column_config.Column(
+                    "Name",
+                    width=150
                 ),
                 "Staff": st.column_config.Column(
                     "Staff",
-                    width=70
+                    width=100
                 ),
                 "Last Visit": st.column_config.Column(
                     "Last Visit",
-                    width=180
+                    width=100
                 )
             },
             key="appointment_editor",
             disabled=["Date", "Name", "Address", "Time", "Staff", "Last Visit"],
             num_rows="dynamic",
-            use_container_width=True,
-            selection_mode="single"
+            use_container_width=True
         )
 
-        # Show detail card for selected rows
-        if not selected_rows.empty:
-            for _, row in selected_rows.iterrows():
+        # Add radio button selection
+        customer_names = edited_df['Name'].tolist()
+        if customer_names:
+            selected = st.radio("Select Customer", ["None"] + customer_names, key="customer_selector")
+            if selected != "None":
+                st.session_state.selected_customer = selected
+            else:
+                st.session_state.selected_customer = None
+
+            # Show detail card only for the selected customer
+            if st.session_state.selected_customer:
+                row = edited_df[edited_df['Name'] == st.session_state.selected_customer].iloc[0]
                 # Get the full row data including raw_date
                 full_row_data = display_df[display_df['Name'] == row['Name']].iloc[0]
                 
@@ -417,7 +425,7 @@ if not appointments_df.empty:
                             if st.button("📝 Add Note", key=f"note_{row['Name'].replace(' ', '_').lower()}"):
                                 st.text_area("Add a note for this appointment", key=f"note_text_{row['Name'].replace(' ', '_').lower()}")
                     
-                    if len(selected_rows) > 1:
+                    if len(edited_df) > 1:
                         st.markdown("---")
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
