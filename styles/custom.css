@@ -35,7 +35,16 @@ section[data-testid="stSidebar"] {
 
 /* Highlight current date rows */
 [data-testid="stDataFrame"] div[role="row"].current-date {
-    background-color: #f5f5f5 !important;
+    background-color: #e8f5e9 !important;
+}
+
+/* Table row hover and selection styles */
+[data-testid="stDataFrame"] div[role="row"]:hover {
+    background-color: #c8e6c9 !important;
+}
+
+[data-testid="stDataFrame"] div[role="row"].selected {
+    background-color: #a5d6a7 !important;
 }
 
 /* Customer details card */

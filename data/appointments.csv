@@ -1,61 +1,96 @@
 Name,Address,Appointment_date,Start_time,End_time,Staff_name,Days_since_last_visit
-Sara Bergman,Östragatan 23,1900-02-01,14:15,16:00,Alice,45
-Anders Karlsson,Södra vägen 12,2025-01-01,09:00,11:00,Lotta,30
-Maria Svensson,Norra gatan 45,2025-01-01,13:00,15:00,Meera,14
-Erik Lindgren,Västergatan 8,2025-01-02,10:30,12:00,Alice,First visit
-Johan Nilsson,Kungsgatan 67,2025-01-03,09:00,11:00,Hefa,21
-Emma Johansson,Järnvägsgatan 12,2025-01-04,14:00,16:00,Alice,30
-Karl Gustafsson,Hamngatan 56,2025-01-05,09:00,11:00,Steve,90
-Anna Holm,Kyrkogatan 78,2025-01-05,13:00,15:00,Hefa,7
-Mikael Berg,Åsgatan 45,2025-01-06,10:45,11:15,Lotta,14
-Sofia Löfgren,Ringvägen 23,2025-01-06,13:00,15:00,Meera,28
-Lars Nyström,Parkgatan 67,2025-01-07,10:00,12:00,Alice,45
-Eva Malmström,Sveagatan 89,2025-01-07,14:00,16:00,Steve,60
-Karin Wallin,Allévägen 34,2025-01-08,13:00,15:00,Lotta,First visit
-Nils Persson,Brogatan 12,2025-01-08,09:00,11:00,Hefa,30
-Magnus Sjöberg,Strandgatan 56,2025-01-09,10:00,12:00,Meera,21
-Helena Viklund,Skolgatan 78,2025-01-09,14:00,16:00,Alice,14
-Per Öberg,Torggatan 90,2025-01-10,09:00,11:00,Steve,7
-Ingrid Ek,Industrigatan 23,2025-01-10,13:00,15:00,Hefa,90
-Thomas Lind,Villagatan 45,2025-01-11,09:00,11:00,Lotta,30
-Christina Holm,Trädgårdsgatan 67,2025-01-11,13:00,15:00,Meera,45
-Fredrik Sandberg,Bergsgatan 89,2025-01-12,10:00,12:00,Alice,60
-Marie Björk,Ängsgatan 12,2025-01-12,14:00,16:00,Steve,First visit
-Olof Strand,Lindgatan 34,2025-01-13,09:00,11:00,Hefa,14
-Elin Forsberg,Centralgatan 56,2025-01-13,13:00,15:00,Lotta,28
-Gustav Hedlund,Backgatan 78,2025-01-14,10:00,12:00,Meera,7
-Astrid Nordin,Sjögatan 90,2025-01-14,14:00,16:00,Alice,45
-Daniel Isaksson,Höjdgatan 23,2025-01-15,09:00,11:00,Steve,60
-Margareta Åberg,Tallgatan 45,2025-01-15,13:00,15:00,Hefa,30
-Birgitta Ekman,Storgatan 34,2025-01-16,14:00,16:00,Meera,14
-Robert Lundin,Grangatan 67,2025-01-16,10:00,12:00,Lotta,21
-Anna Holm,Kyrkogatan 78,2025-02-01,19:00,23:30,Lotta,27
-Erik Andersson,Kungsgatan 15,2025-02-01,09:00,11:00,Meera,30
-Anna Lindström,Östergatan 8,2025-02-01,13:00,15:00,Alice,14
-Lars Johansson,Strömstadsvägen 45,2025-02-02,10:00,12:00,Steve,First visit
-Karin Gustafsson,Kampenhofsgatan 12,2025-02-02,14:00,16:00,Hefa,45
-Per Nilsson,Västanvindsvägen 23,2025-02-03,09:00,11:00,Lotta,21
-Sofia Ekström,Sundbergsgatan 7,2025-02-03,13:00,15:00,Meera,60
-Magnus Bergström,Margretegärdsgatan 34,2025-02-04,10:00,12:00,Alice,First visit
-Eva Söderberg,Norra Drottninggatan 19,2025-02-04,14:00,16:00,Steve,30
-Nils Pettersson,Asplundsgatan 5,2025-02-05,09:00,11:00,Hefa,90
-Ingrid Blomqvist,Södra Hamngatan 28,2025-02-05,13:00,15:00,Lotta,7
-Oscar Lundqvist,Kilbäcksgatan 42,2025-02-06,09:00,11:00,Meera,14
-Birgitta Falk,Junogatan 15,2025-02-06,13:00,15:00,Alice,45
-Kristina Jansson,Kungsgatan 91,2025-02-07,14:00,16:00,Hefa,60
-Stefan Holmberg,Göteborgsvägen 73,2025-02-07,10:00,12:00,Steve,30
-David Karlsson,Edingsvägen 26,2025-02-08,09:00,11:00,Lotta,First visit
-Lena Berggren,Stenbacken 8,2025-02-08,13:00,15:00,Meera,21
-Mikael Sundberg,Bävevägen 52,2025-02-09,10:00,12:00,Alice,7
-Annika Mårtensson,Packhusgatan 14,2025-02-09,14:00,16:00,Steve,90
-Håkan Lindqvist,Östanvindsvägen 31,2025-02-10,09:00,11:00,Hefa,30
-Malin Sandström,Bastionsgatan 17,2025-02-10,13:00,15:00,Lotta,45
-Filip Nordström,Vällebergsvägen 64,2025-02-11,10:00,12:00,Meera,14
-Cecilia Viklund,Södra Drottninggatan 22,2025-02-11,14:00,16:00,Alice,28
-Patrik Bergman,Museigatan 9,2025-02-12,09:00,11:00,Steve,60
-Linda Sjöström,Kapellevägen 38,2025-02-12,13:00,15:00,Hefa,First visit
-Martin Ekman,Västgötavägen 83,2025-02-13,10:00,12:00,Lotta,21
-Camilla Hjalmarsson,Bogärdesgatan 11,2025-02-13,14:00,16:00,Meera,7
-Tommy Axelsson,Norrgatan 47,2025-02-14,09:00,11:00,Alice,45
-Julia Larsson,Sunningevägen 25,2025-02-14,13:00,15:00,Steve,30
-Lisa Andersson,Drottninggatan 34,,13:30,15:00,Lotta,60
+Gustav Eriksson,"Margretegärdegatan 37, Uddevalla",2025-02-03,09:00,11:00,Lotta,1
+Maria Nilsson,"Birger Jarlsgatan 7, Uddevalla",2025-02-03,10:00,12:00,Meera,28
+Helena Olsson,"Österlånggatan 3, Uddevalla",2025-02-03,10:00,12:00,Alice,8
+Eva Larsson,"Junogatan 87, Uddevalla",2025-02-03,13:00,15:00,Steve,31
+Lisa Lindgren,"Sveavägen 23, Uddevalla",2025-02-04,08:00,10:00,Lotta,28
+Anna Andersson,"Storgatan 1, Uddevalla",2025-02-04,10:00,12:00,Meera,First visit
+Björn Andersson,"Sunningevägen 83, Uddevalla",2025-02-04,12:00,14:00,Alice,5
+Lars Gustafsson,"Göteborgsvägen 13, Uddevalla",2025-02-04,13:00,15:00,Steve,8
+Eva Bergman,"Norgårdsvägen 6, Uddevalla",2025-02-05,08:00,10:00,Lotta,32
+Sara Nilsson,"Drottninggatan 8, Uddevalla",2025-02-06,10:00,12:00,Meera,2
+Eva Larsson,"Junogatan 87, Uddevalla",2025-02-06,11:00,13:00,Alice,First visit
+Björn Andersson,"Sunningevägen 83, Uddevalla",2025-02-06,13:00,15:00,Steve,4
+Anna Andersson,"Storgatan 1, Uddevalla",2025-02-06,14:00,16:00,Lotta,27
+Erik Eriksson,"Kungsgatan 15, Uddevalla",2025-02-06,14:00,16:00,Meera,9
+Johan Svensson,"Drottninggatan 45, Uddevalla",2025-02-06,14:00,16:00,Alice,First visit
+Gustav Karlsson,"Kurverödsvägen 30, Uddevalla",2025-02-07,08:00,10:00,Steve,19
+Maria Nilsson,"Birger Jarlsgatan 7, Uddevalla",2025-02-07,10:00,12:00,Lotta,5
+Hans Berg,"Sigelhultsvägen 29, Uddevalla",2025-02-07,10:00,12:00,Meera,31
+Eva Bergman,"Norgårdsvägen 6, Uddevalla",2025-02-07,13:00,15:00,Alice,38
+Björn Gustafsson,"Västerlånggatan 32, Uddevalla",2025-02-07,13:00,15:00,Steve,29
+Anna Andersson,"Storgatan 1, Uddevalla",2025-02-10,08:00,10:00,Lotta,32
+Johan Svensson,"Äsperödsvägen 74, Uddevalla",2025-02-10,12:00,14:00,Alice,17
+Hans Berg,"Sigelhultsvägen 29, Uddevalla",2025-02-11,10:00,12:00,Steve,20
+Johan Svensson,"Drottninggatan 45, Uddevalla",2025-02-11,14:00,16:00,Lotta,First visit
+Eva Bergman,"Norgårdsvägen 6, Uddevalla",2025-02-12,08:00,10:00,Meera,37
+Hans Berg,"Sigelhultsvägen 29, Uddevalla",2025-02-12,09:00,11:00,Alice,22
+Lars Gustafsson,"Göteborgsvägen 13, Uddevalla",2025-02-12,12:00,14:00,Steve,6
+Gustav Larsson,"Strömstadsvägen 35, Uddevalla",2025-02-13,11:00,13:00,Lotta,39
+Erik Eriksson,"Kungsgatan 15, Uddevalla",2025-02-14,11:00,13:00,Meera,First visit
+Maria Nilsson,"Södra Drottninggatan 2, Uddevalla",2025-02-14,15:00,17:00,Alice,6
+Lars Gustafsson,"Göteborgsvägen 13, Uddevalla",2025-02-17,10:00,12:00,Steve,22
+Maria Nilsson,"Birger Jarlsgatan 7, Uddevalla",2025-02-17,12:00,14:00,Lotta,First visit
+Lisa Lindgren,"Sveavägen 23, Uddevalla",2025-02-17,15:00,17:00,Meera,22
+Sara Nilsson,"Drottninggatan 8, Uddevalla",2025-02-17,15:00,17:00,Alice,4
+Karin Larsson,"Västerlånggatan 67, Uddevalla",2025-02-18,10:00,12:00,Steve,33
+Gustav Larsson,"Strömstadsvägen 35, Uddevalla",2025-02-18,11:00,13:00,Lotta,36
+Johan Svensson,"Drottninggatan 45, Uddevalla",2025-02-19,09:00,11:00,Meera,14
+Erik Olsson,"Kampenhofsgatan 43, Uddevalla",2025-02-19,11:00,13:00,Alice,First visit
+Lisa Lindgren,"Sveavägen 23, Uddevalla",2025-02-20,09:00,11:00,Steve,32
+Gustav Eriksson,"Margretegärdegatan 37, Uddevalla",2025-02-20,09:00,11:00,Lotta,26
+Gustav Larsson,"Strömstadsvägen 35, Uddevalla",2025-02-20,12:00,14:00,Meera,First visit
+Karin Larsson,"Västerlånggatan 67, Uddevalla",2025-02-20,14:00,16:00,Alice,11
+Per Nilsson,"Sunningevägen 5, Uddevalla",2025-02-21,08:00,10:00,Steve,35
+Gustav Karlsson,"Kurverödsvägen 30, Uddevalla",2025-02-24,11:00,13:00,Lotta,10
+Erik Olsson,"Kampenhofsgatan 43, Uddevalla",2025-02-24,12:00,14:00,Meera,37
+Sara Lundberg,"Fasserödsvägen 31, Uddevalla",2025-02-24,14:00,16:00,Alice,14
+Lisa Lindgren,"Sveavägen 23, Uddevalla",2025-02-25,09:00,11:00,Steve,First visit
+Sara Axelsson,"Sigelhultsvägen 80, Uddevalla",2025-02-25,09:00,11:00,Lotta,First visit
+Maria Nilsson,"Birger Jarlsgatan 7, Uddevalla",2025-02-25,11:00,13:00,Meera,26
+Erik Eriksson,"Kungsgatan 15, Uddevalla",2025-02-25,11:00,13:00,Alice,1
+Anna Andersson,"Storgatan 1, Uddevalla",2025-02-25,12:00,14:00,Steve,First visit
+Per Nilsson,"Sunningevägen 5, Uddevalla",2025-02-25,12:00,14:00,Lotta,39
+Gustav Karlsson,"Kurverödsvägen 30, Uddevalla",2025-02-25,13:00,15:00,Meera,10
+Gustav Eriksson,"Margretegärdegatan 37, Uddevalla",2025-02-26,08:00,10:00,Alice,6
+Helena Olsson,"Österlånggatan 3, Uddevalla",2025-02-26,11:00,13:00,Steve,13
+Erik Eriksson,"Kungsgatan 15, Uddevalla",2025-02-26,12:00,14:00,Lotta,31
+Sara Nilsson,"Drottninggatan 8, Uddevalla",2025-02-27,10:00,12:00,Meera,24
+Maria Persson,"Bastionsgatan 64, Uddevalla",2025-02-28,10:00,12:00,Alice,30
+Per Nilsson,"Sunningevägen 5, Uddevalla",2025-02-28,14:00,16:00,Steve,22
+Maria Persson,"Bastionsgatan 64, Uddevalla",2025-03-03,10:00,12:00,Lotta,40
+Sara Axelsson,"Sigelhultsvägen 80, Uddevalla",2025-03-04,14:00,16:00,Meera,6
+Sara Lundberg,"Fasserödsvägen 31, Uddevalla",2025-03-05,08:00,10:00,Alice,34
+Björn Andersson,"Sunningevägen 83, Uddevalla",2025-03-06,12:00,14:00,Steve,4
+Karin Larsson,"Västerlånggatan 67, Uddevalla",2025-03-06,13:00,15:00,Lotta,First visit
+Helena Olsson,"Österlånggatan 3, Uddevalla",2025-03-07,12:00,14:00,Meera,27
+Eva Larsson,"Junogatan 87, Uddevalla",2025-03-10,08:00,10:00,Alice,8
+Björn Gustafsson,"Västerlånggatan 32, Uddevalla",2025-03-10,10:00,12:00,Steve,9
+Maria Persson,"Bastionsgatan 64, Uddevalla",2025-03-10,10:00,12:00,Lotta,14
+Sara Lundberg,"Fasserödsvägen 31, Uddevalla",2025-03-11,13:00,15:00,Meera,6
+Lars Gustafsson,"Göteborgsvägen 13, Uddevalla",2025-03-11,15:00,17:00,Alice,30
+Björn Gustafsson,"Västerlånggatan 32, Uddevalla",2025-03-12,08:00,10:00,Steve,14
+Maria Nilsson,"Södra Drottninggatan 2, Uddevalla",2025-03-12,08:00,10:00,Lotta,34
+Helena Olsson,"Österlånggatan 3, Uddevalla",2025-03-12,10:00,12:00,Meera,First visit
+Gustav Larsson,"Strömstadsvägen 35, Uddevalla",2025-03-12,13:00,15:00,Alice,First visit
+Helena Olsson,"Österlånggatan 3, Uddevalla",2025-03-13,11:00,13:00,Steve,29
+Gustav Karlsson,"Kurverödsvägen 30, Uddevalla",2025-03-13,12:00,14:00,Lotta,37
+Erik Olsson,"Kampenhofsgatan 43, Uddevalla",2025-03-14,10:00,12:00,Meera,First visit
+Sara Axelsson,"Sigelhultsvägen 80, Uddevalla",2025-03-14,14:00,16:00,Alice,1
+Sara Lundberg,"Fasserödsvägen 31, Uddevalla",2025-03-17,08:00,10:00,Steve,8
+Gustav Eriksson,"Margretegärdegatan 37, Uddevalla",2025-03-18,09:00,11:00,Lotta,16
+Johan Svensson,"Äsperödsvägen 74, Uddevalla",2025-03-20,08:00,10:00,Meera,First visit
+Maria Nilsson,"Södra Drottninggatan 2, Uddevalla",2025-03-20,09:00,11:00,Alice,First visit
+Björn Andersson,"Sunningevägen 83, Uddevalla",2025-03-20,13:00,15:00,Steve,5
+Per Nilsson,"Sunningevägen 5, Uddevalla",2025-03-21,10:00,12:00,Lotta,First visit
+Magnus Gustavsson,"Norra Drottninggatan 36, Uddevalla",2025-03-21,11:00,13:00,Meera,19
+Sara Nilsson,"Drottninggatan 8, Uddevalla",2025-03-24,10:00,12:00,Alice,9
+Sara Axelsson,"Sigelhultsvägen 80, Uddevalla",2025-03-25,10:00,12:00,Steve,24
+Magnus Gustavsson,"Norra Drottninggatan 36, Uddevalla",2025-03-25,13:00,15:00,Lotta,3
+Karin Larsson,"Västerlånggatan 67, Uddevalla",2025-03-26,13:00,15:00,Meera,5
+Gustav Eriksson,"Margretegärdegatan 37, Uddevalla",2025-03-27,11:00,13:00,Alice,15
+Lars Gustafsson,"Göteborgsvägen 13, Uddevalla",2025-03-27,11:00,13:00,Steve,35
+Johan Svensson,"Äsperödsvägen 74, Uddevalla",2025-03-27,11:00,13:00,Lotta,20
+Eva Larsson,"Junogatan 87, Uddevalla",2025-03-28,09:00,11:00,Meera,First visit
+Magnus Gustavsson,"Norra Drottninggatan 36, Uddevalla",2025-03-31,12:00,14:00,Alice,6
+Eva Bergman,"Norgårdsvägen 6, Uddevalla",2025-03-31,14:00,16:00,Steve,5
