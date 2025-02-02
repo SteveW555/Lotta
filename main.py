@@ -10,7 +10,7 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
-# Define the data file path
+# Define the data file paths
 DATA_FILE = os.path.join(DATA_DIR, 'appointments.csv')
 
 # Page configuration
@@ -88,24 +88,6 @@ def save_appointments(df):
             file_name="appointments.csv",
             mime="text/csv"
         )
-
-def get_customer_appointments(df, customer_name):
-    """Get past, current, and next appointments for a customer"""
-    customer_appointments = df[df['Name'] == customer_name].copy()
-    customer_appointments['Appointment_date'] = pd.to_datetime(customer_appointments['Appointment_date'])
-    current_date = pd.to_datetime(datetime.now().date())
-
-    past_appt = customer_appointments[customer_appointments['Appointment_date'] < current_date].sort_values('Appointment_date', ascending=False).iloc[0] if not customer_appointments[customer_appointments['Appointment_date'] < current_date].empty else None
-    current_appt = customer_appointments[customer_appointments['Appointment_date'] == current_date].iloc[0] if not customer_appointments[customer_appointments['Appointment_date'] == current_date].empty else None
-    next_appt = customer_appointments[customer_appointments['Appointment_date'] > current_date].sort_values('Appointment_date').iloc[0] if not customer_appointments[customer_appointments['Appointment_date'] > current_date].empty else None
-
-    return past_appt, current_appt, next_appt
-
-def format_appointment_date(date):
-    """Format the appointment date"""
-    if pd.isna(date):
-        return ''
-    return date.strftime("%Y-%m-%d")  # Changed to YYYY-MM-DD format for proper sorting
 
 # Title
 st.markdown('<h1 class="hero-title">Lottas Hemstäd Appointments</h1>', unsafe_allow_html=True)
@@ -204,7 +186,7 @@ with st.sidebar:
         except Exception as e:
             st.error(f"Error uploading file: {str(e)}")
 
-# Main content - View Appointments
+# Display appointments table
 if not appointments_df.empty:
     appointments_df['Appointment_date'] = pd.to_datetime(appointments_df['Appointment_date'])
     current_date = pd.to_datetime(datetime.now().date())
@@ -290,6 +272,7 @@ if not appointments_df.empty:
         height=400,
         allow_unsafe_jscode=True,
         theme='light',
+        key="appointments_grid",
         custom_css={
             ".ag-row-selected": {"background-color": "#a5d6a7 !important"},
             ".ag-row-hover": {"background-color": "#c8e6c9 !important"},
