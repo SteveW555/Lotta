@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import os
 from utils.date_helpers import format_appointment_date, calculate_days_since_last_visit
+from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 
 # Ensure data directory exists
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
@@ -157,7 +158,9 @@ with st.sidebar:
     new_date = st.date_input("Appointment Date")
     new_start_time = st.time_input("Start Time", value=datetime.strptime("09:00", "%H:%M"), step=1800)
     new_end_time = st.time_input("End Time", value=datetime.strptime("11:00", "%H:%M"), step=1800)
-    staff_options = sorted(appointments_df['Staff_name'].unique().tolist())
+    staff_options = sorted(appointments_df['Staff_name'].unique().tolist()) if not appointments_df.empty else []
+    if not staff_options:
+        staff_options = ["Staff 1"]
     new_staff = st.selectbox("Staff", options=staff_options, index=0)
 
     if st.button("Add Appointment"):
@@ -228,7 +231,7 @@ if not appointments_df.empty:
         date_range_end = date_filter_dt + timedelta(days=3)
 
         filtered_df = appointments_df[
-            (appointments_df['Appointment_date'] >= date_range_start) &
+            (appointments_df['Appointment_date'] >= date_range_start) & 
             (appointments_df['Appointment_date'] <= date_range_end)
         ]
 
@@ -268,164 +271,157 @@ if not appointments_df.empty:
         columns_to_show = ['Date', 'Name', 'Address', 'Time', 'Staff_name', 'Last Visit']
         display_columns = {
             'Staff_name': 'Staff',
-            'Last Visit': 'Last Visit'  # Ensure column name matches
+            'Last Visit': 'Last Visit'
         }
         
-        # Create a copy with only display columns and sort by date
         display_view = display_df[columns_to_show].rename(columns=display_columns)
         display_view = display_view.sort_values(by='Date', ascending=True)
         
-        # Initialize session state for selected customer if not exists
-        if 'selected_customer' not in st.session_state:
-            st.session_state.selected_customer = None
+        # Use st‑aggrid for single row selection
+        # Determine which rows to preselect based on session state
+        pre_selected_rows = []
+        if st.session_state.selected_customer:
+            # Find the matching row in the display_view DataFrame
+            selected = display_view[display_view['Name'] == st.session_state.selected_customer]
+            if not selected.empty:
+                pre_selected_rows = selected.to_dict('records')  # Convert matching row(s) to dict
 
-        # Display appointments in a data editor
-        edited_df = st.data_editor(
+        gb = GridOptionsBuilder.from_dataframe(display_view)
+        gb.configure_column("Date", width=180)    # Configure Date column
+        gb.configure_column("Time", width=150)    # Configure Time column
+        gb.configure_column("Name", width=150)    # Configure Name column
+        gb.configure_column("Staff", width=100)   # Configure Staff column
+        gb.configure_column("Last Visit", width=100)  # Configure Last Visit column
+        gb.configure_selection(selection_mode="single", use_checkbox=False)  # Single row selection
+        grid_options = gb.build()
+
+        grid_response = AgGrid(
             display_view,
-            hide_index=True,
-            column_config={
-                "Date": st.column_config.Column(
-                    "Date",
-                    width=180
-                ),
-                "Time": st.column_config.Column(
-                    "Time",
-                    width=150
-                ),
-                "Name": st.column_config.Column(
-                    "Name",
-                    width=150
-                ),
-                "Staff": st.column_config.Column(
-                    "Staff",
-                    width=100
-                ),
-                "Last Visit": st.column_config.Column(
-                    "Last Visit",
-                    width=100
-                )
-            },
-            key="appointment_editor",
-            disabled=["Date", "Name", "Address", "Time", "Staff", "Last Visit"],
-            num_rows="dynamic",
-            use_container_width=True
+            gridOptions=grid_options,
+            update_mode=GridUpdateMode.SELECTION_CHANGED,
+            use_container_width=True,
+            pre_selected_rows=pre_selected_rows  # Pass in the pre-selected row(s)
         )
 
-        # Add radio button selection
-        customer_names = edited_df['Name'].tolist()
-        if customer_names:
-            selected = st.radio("Select Customer", ["None"] + customer_names, key="customer_selector")
-            if selected != "None":
-                st.session_state.selected_customer = selected
+
+        # Updated handling for selected_rows
+        selected_rows = grid_response.get('selected_rows', [])
+        if isinstance(selected_rows, pd.DataFrame):
+            if not selected_rows.empty:
+                row = selected_rows.iloc[0]
+                st.session_state.selected_customer = row['Name']
             else:
                 st.session_state.selected_customer = None
+        elif selected_rows:
+            row = selected_rows[0]
+            st.session_state.selected_customer = row['Name']
+        else:
+            st.session_state.selected_customer = None
 
-            # Show detail card only for the selected customer
-            if st.session_state.selected_customer:
-                row = edited_df[edited_df['Name'] == st.session_state.selected_customer].iloc[0]
-                # Get the full row data including raw_date
-                full_row_data = display_df[display_df['Name'] == row['Name']].iloc[0]
+        # Show detail card only for the selected customer
+        if st.session_state.selected_customer:
+            full_row_data = display_df[display_df['Name'] == st.session_state.selected_customer].iloc[0]
+            
+            with st.container():
+                st.markdown(f"### Appointment Details for {row['Name']}")
+                col1, col2 = st.columns(2)
                 
-                with st.container():
-                    st.markdown(f"### Appointment Details for {row['Name']}")
-                    col1, col2 = st.columns(2)
-                    
-                    with col1:
-                        st.markdown(f"**Customer Name:** {row['Name']}")
-                        st.markdown(f"**Address:** {row['Address']}")
-                        st.markdown(f"**Date:** {row['Date']}")
-                    
-                    with col2:
-                        st.markdown(f"**Time:** {row['Time']}")
-                        st.markdown(f"**Staff:** {row['Staff']}")
-                        st.markdown(f"**Last Visit:** {row['Last Visit']}")
+                with col1:
+                    st.markdown(f"**Customer Name:** {row['Name']}")
+                    st.markdown(f"**Address:** {row['Address']}")
+                    st.markdown(f"**Date:** {row['Date']}")
+                
+                with col2:
+                    st.markdown(f"**Time:** {row['Time']}")
+                    st.markdown(f"**Staff:** {row['Staff']}")
+                    st.markdown(f"**Last Visit:** {row['Last Visit']}")
+            
+                st.markdown("---")  # Add a separator line
 
-                    st.markdown("---")  # Add a separator line
+                # Action buttons in a cleaner layout
+                button_col1, button_col2, button_col3 = st.columns(3)
+                
+                with button_col1:
+                    if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
+                        if st.button("✏️ Edit", key=f"edit_{row['Name'].replace(' ', '_').lower()}"):
+                            st.session_state.editing_appointment = row['Name'].replace(" ", "_").lower()
+                            # Split time range into start and end times
+                            time_parts = row['Time'].split(' - ')
+                            start_time = time_parts[0] if len(time_parts) > 0 else "09:00"
+                            end_time = time_parts[1] if len(time_parts) > 1 else "10:00"
 
-                    # Action buttons in a cleaner layout
-                    button_col1, button_col2, button_col3 = st.columns(3)
-                    
-                    with button_col1:
-                        if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("✏️ Edit", key=f"edit_{row['Name'].replace(' ', '_').lower()}"):
-                                st.session_state.editing_appointment = row['Name'].replace(" ", "_").lower()
-                                # Split time range into start and end times
-                                time_parts = row['Time'].split(' - ')
-                                start_time = time_parts[0] if len(time_parts) > 0 else "09:00"
-                                end_time = time_parts[1] if len(time_parts) > 1 else "10:00"
-
-                                st.session_state.edit_data = {
-                                    'Name': full_row_data['Name'],
-                                    'Address': full_row_data['Address'],
-                                    'Date': full_row_data['raw_date'].date() if pd.notna(full_row_data['raw_date']) else datetime.now().date(),
-                                    'Start_time': start_time,
-                                    'End_time': end_time,
-                                    'Staff': full_row_data['Staff_name']
-                                }
-                                st.rerun()
-                        else:
-                            # Show edit form
-                            st.markdown("### Edit Appointment")
-                            edit_col1, edit_col2 = st.columns(2)
-                            
-                            with edit_col1:
-                                new_name = st.text_input("Name", value=st.session_state.edit_data['Name'], key=f"edit_name_{row['Name'].replace(' ', '_').lower()}")
-                                new_address = st.text_input("Address", value=st.session_state.edit_data['Address'], key=f"edit_address_{row['Name'].replace(' ', '_').lower()}")
-                                new_date = st.date_input("Date", value=st.session_state.edit_data['Date'], key=f"edit_date_{row['Name'].replace(' ', '_').lower()}")
-                            
-                            with edit_col2:
-                                new_start_time = st.time_input("Start Time", 
-                                    value=datetime.strptime(st.session_state.edit_data['Start_time'], "%H:%M").time() if isinstance(st.session_state.edit_data['Start_time'], str) else st.session_state.edit_data['Start_time'],
-                                    key=f"edit_start_{row['Name'].replace(' ', '_').lower()}",
-                                    step=1800)  # 30 minutes in seconds
-                                new_end_time = st.time_input("End Time", 
-                                    value=datetime.strptime(st.session_state.edit_data['End_time'], "%H:%M").time() if isinstance(st.session_state.edit_data['End_time'], str) else st.session_state.edit_data['End_time'],
-                                    key=f"edit_end_{row['Name'].replace(' ', '_').lower()}",
-                                    step=1800)  # 30 minutes in seconds
-                                new_staff = st.selectbox("Staff", 
-                                    options=staff_options,
-                                    index=staff_options.index(st.session_state.edit_data['Staff']) if st.session_state.edit_data['Staff'] in staff_options else 0,
-                                    key=f"edit_staff_{row['Name'].replace(' ', '_').lower()}")
-                            
-                            save_col1, save_col2 = st.columns(2)
-                            with save_col1:
-                                if st.button("Save Changes", key=f"save_{row['Name'].replace(' ', '_').lower()}"):
-                                    # Update the appointment in the dataframe
-                                    mask = appointments_df['Name'] == row['Name']
-                                    appointments_df.loc[mask, 'Name'] = new_name
-                                    appointments_df.loc[mask, 'Address'] = new_address
-                                    appointments_df.loc[mask, 'Appointment_date'] = pd.Timestamp(new_date)
-                                    appointments_df.loc[mask, 'Start_time'] = new_start_time.strftime("%H:%M")
-                                    appointments_df.loc[mask, 'End_time'] = new_end_time.strftime("%H:%M")
-                                    appointments_df.loc[mask, 'Staff_name'] = new_staff
-                                    
-                                    # Resort after editing
-                                    appointments_df = appointments_df.sort_values(by='Appointment_date', ascending=True)
-                                    
-                                    save_appointments(appointments_df)
-                                    st.session_state.editing_appointment = None
-                                    st.success("Appointment updated successfully!")
-                                    st.rerun()
-                            
-                            with save_col2:
-                                if st.button("Cancel Edit", key=f"cancel_edit_{row['Name'].replace(' ', '_').lower()}"):
-                                    st.session_state.editing_appointment = None
-                                    st.rerun()
-                    
-                    with button_col2:
-                        if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("❌ Cancel", key=f"cancel_{row['Name'].replace(' ', '_').lower()}"):
-                                appointments_df = appointments_df[appointments_df['Name'] != row['Name']]
+                            st.session_state.edit_data = {
+                                'Name': full_row_data['Name'],
+                                'Address': full_row_data['Address'],
+                                'Date': full_row_data['raw_date'].date() if pd.notna(full_row_data['raw_date']) else datetime.now().date(),
+                                'Start_time': start_time,
+                                'End_time': end_time,
+                                'Staff': full_row_data['Staff_name']
+                            }
+                            st.rerun()
+                    else:
+                        # Show edit form
+                        st.markdown("### Edit Appointment")
+                        edit_col1, edit_col2 = st.columns(2)
+                        
+                        with edit_col1:
+                            new_name = st.text_input("Name", value=st.session_state.edit_data['Name'], key=f"edit_name_{row['Name'].replace(' ', '_').lower()}")
+                            new_address = st.text_input("Address", value=st.session_state.edit_data['Address'], key=f"edit_address_{row['Name'].replace(' ', '_').lower()}")
+                            new_date = st.date_input("Date", value=st.session_state.edit_data['Date'], key=f"edit_date_{row['Name'].replace(' ', '_').lower()}")
+                        
+                        with edit_col2:
+                            new_start_time = st.time_input("Start Time", 
+                                value=datetime.strptime(st.session_state.edit_data['Start_time'], "%H:%M").time() if isinstance(st.session_state.edit_data['Start_time'], str) else st.session_state.edit_data['Start_time'],
+                                key=f"edit_start_{row['Name'].replace(' ', '_').lower()}",
+                                step=1800)  # 30 minutes in seconds
+                            new_end_time = st.time_input("End Time", 
+                                value=datetime.strptime(st.session_state.edit_data['End_time'], "%H:%M").time() if isinstance(st.session_state.edit_data['End_time'], str) else st.session_state.edit_data['End_time'],
+                                key=f"edit_end_{row['Name'].replace(' ', '_').lower()}",
+                                step=1800)  # 30 minutes in seconds
+                            new_staff = st.selectbox("Staff", 
+                                options=staff_options,
+                                index=staff_options.index(st.session_state.edit_data['Staff']) if st.session_state.edit_data['Staff'] in staff_options else 0,
+                                key=f"edit_staff_{row['Name'].replace(' ', '_').lower()}")
+                        
+                        save_col1, save_col2 = st.columns(2)
+                        with save_col1:
+                            if st.button("Save Changes", key=f"save_{row['Name'].replace(' ', '_').lower()}"):
+                                # Update the appointment in the dataframe
+                                mask = appointments_df['Name'] == row['Name']
+                                appointments_df.loc[mask, 'Name'] = new_name
+                                appointments_df.loc[mask, 'Address'] = new_address
+                                appointments_df.loc[mask, 'Appointment_date'] = pd.Timestamp(new_date)
+                                appointments_df.loc[mask, 'Start_time'] = new_start_time.strftime("%H:%M")
+                                appointments_df.loc[mask, 'End_time'] = new_end_time.strftime("%H:%M")
+                                appointments_df.loc[mask, 'Staff_name'] = new_staff
+                                
+                                # Resort after editing
+                                appointments_df = appointments_df.sort_values(by='Appointment_date', ascending=True)
+                                
                                 save_appointments(appointments_df)
-                                st.success("Appointment cancelled successfully!")
+                                st.session_state.editing_appointment = None
+                                st.success("Appointment updated successfully!")
                                 st.rerun()
-                    
-                    with button_col3:
-                        if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
-                            if st.button("📝 Add Note", key=f"note_{row['Name'].replace(' ', '_').lower()}"):
-                                st.text_area("Add a note for this appointment", key=f"note_text_{row['Name'].replace(' ', '_').lower()}")
-                    
-                    if len(edited_df) > 1:
-                        st.markdown("---")
+                        
+                        with save_col2:
+                            if st.button("Cancel Edit", key=f"cancel_edit_{row['Name'].replace(' ', '_').lower()}"):
+                                st.session_state.editing_appointment = None
+                                st.rerun()
+                
+                with button_col2:
+                    if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
+                        if st.button("❌ Cancel", key=f"cancel_{row['Name'].replace(' ', '_').lower()}"):
+                            appointments_df = appointments_df[appointments_df['Name'] != row['Name']]
+                            save_appointments(appointments_df)
+                            st.success("Appointment cancelled successfully!")
+                            st.rerun()
+                
+                with button_col3:
+                    if st.session_state.editing_appointment != row['Name'].replace(" ", "_").lower():
+                        if st.button("📝 Add Note", key=f"note_{row['Name'].replace(' ', '_').lower()}"):
+                            st.text_area("Add a note for this appointment", key=f"note_text_{row['Name'].replace(' ', '_').lower()}")
+                
+                if len(display_view) > 1:
+                    st.markdown("---")
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
