@@ -1,4 +1,10 @@
 import streamlit as st
+
+# Title
+st.markdown('<h1 class="hero-title">Lottas Hemstäd Appointments</h1>', unsafe_allow_html=True)
+
+# Comment out everything else for debugging
+"""
 import pandas as pd
 from datetime import datetime, timedelta
 import os
@@ -89,8 +95,6 @@ def save_appointments(df):
             mime="text/csv"
         )
 
-# Title
-st.markdown('<h1 class="hero-title">Lottas Hemstäd Appointments</h1>', unsafe_allow_html=True)
 # Main content
 appointments_df = load_appointments()
 
@@ -416,3 +420,4 @@ if not appointments_df.empty:
                 st.markdown("---")
 else:
     st.info("No appointments yet. Add your first appointment using the sidebar form.")
+"""
